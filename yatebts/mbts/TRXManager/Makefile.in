@@ -1,0 +1,8 @@
+# Makefile
+# This file holds the make rules for the TRX Manager lib
+
+INCLUDES := $(ALL_INCLUDES)
+INCFILES := ../../config.h TRXManager.h
+
+LIBS := libTRXManager.a
+OBJS := TRXManager.o

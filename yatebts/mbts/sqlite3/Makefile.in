@@ -1,0 +1,10 @@
+# Makefile
+# This file holds the make rules for the sqlite3 lib
+
+INCLUDES := $(TOP_INCLUDES)
+INCFILES := ../../config.h sqlite3ext.h sqlite3.h
+
+PROGS:=
+LIBS := libsqlite3.a
+OBJS := sqlite3.o
+DEFS := -DSQLITE_OMIT_LOAD_EXTENSION

@@ -1,0 +1,141 @@
+# Makefile
+# This file holds the make rules for the Telephony Engine
+
+# override DEBUG at compile time to enable full debug or remove it all
+DEBUG :=
+
+CC  := @CC@ -Wall
+CXX := @CXX@ -Wall
+OBJCXX := @CXX@ -Wall
+SED := sed
+DEFS :=
+LIBAUX:= @DLOPEN_LIB@ @LIBS@
+LIBTHR:= @THREAD_LIB@
+INCLUDES := -I.. -I@top_srcdir@
+CFLAGS := @CFLAGS@ @MODULE_CFLAGS@ @INLINE_FLAGS@
+CPPFLAGS := @CFLAGS@ @MODULE_CPPFLAGS@ @INLINE_FLAGS@
+LDFLAGS:= @LDFLAGS@
+SONAME_OPT := @SONAME_OPT@
+LDCONFIG:=true
+OBJCFLAGS := @OBJCFLAGS@
+
+MKDEPS := ../config.status
+YLIB:= libyate.so.@PACKAGE_VERSION@
+CINC := @top_srcdir@/yateclass.h @top_srcdir@/yatemime.h
+EINC := $(CINC) @top_srcdir@/yatengine.h
+PINC := $(EINC) @top_srcdir@/yatephone.h
+CLINC:= $(PINC) @top_srcdir@/yatecbase.h
+LIBS :=
+CLSOBJS := TelEngine.o ObjList.o HashList.o Mutex.o Thread.o Socket.o Resolver.o \
+	String.o DataBlock.o NamedList.o \
+	URI.o Mime.o Array.o Iterator.o XML.o \
+	Hasher.o YMD5.o YSHA1.o YSHA256.o Base64.o Cipher.o Compressor.o \
+	Math.o
+ENGOBJS := Configuration.o Message.o Engine.o Plugin.o
+TELOBJS := DataFormat.o Channel.o
+CLIOBJS := Client.o ClientLogic.o
+
+LIBOBJS := $(CLSOBJS) $(ENGOBJS) $(TELOBJS) $(CLIOBJS)
+CLEANS = $(LIBOBJS) core
+CCOMPILE = $(CC) $(DEFS) $(DEBUG) $(INCLUDES) $(CFLAGS)
+COMPILE = $(CXX) $(DEFS) $(DEBUG) $(INCLUDES) $(CPPFLAGS)
+OBJCCOMPILE = $(OBJCXX) $(OBJCFLAGS) $(DEFS) $(DEBUG) $(INCLUDES) $(CPPFLAGS)
+LINK = $(CXX) $(LDFLAGS)
+
+ifeq (@INTERNAL_REGEX@,yes)
+REGEX_INC:= -I@top_srcdir@/engine/regex -UDEBUG
+LIBOBJS := $(LIBOBJS) regex.o
+else
+REGEX_INC:=
+endif
+
+ifeq (@HAVE_MACOSX_SUPPORT@,yes)
+MACOSX_INC:= @MACOSX_INC@ -I@top_srcdir@/engine/macosx
+MACOSX_LIB:= -lobjc -framework Foundation
+LIBOBJS := $(LIBOBJS) MacOSXUtils.o
+else
+MACOSX_INC:=
+MACOSX_LIB:=
+endif
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+libdir = @libdir@
+incdir = @includedir@/yate
+moddir = @libdir@/yate
+
+# include optional local make rules
+-include YateLocal.mak
+
+.PHONY: all debug ddebug xdebug
+all: ../$(YLIB)
+
+debug:
+	$(MAKE) all DEBUG=-g3
+
+ddebug:
+	$(MAKE) all DEBUG='-g3 -DDEBUG'
+
+xdebug:
+	$(MAKE) all DEBUG='-g3 -DXDEBUG'
+
+.PHONY: clean
+clean:
+	@-$(RM) $(CLEANS) 2>/dev/null
+
+.PHONY: strip
+strip: all
+	-strip --strip-debug --discard-locals ../$(YLIB)
+
+Engine.o: @srcdir@/Engine.cpp $(MKDEPS) $(EINC) ../yateversn.h ../yatepaths.h
+	$(COMPILE) @FDSIZE_HACK@ @HAVE_PRCTL@ @HAVE_GETCWD@ $(MACOSX_INC) -c $<
+
+Channel.o: @srcdir@/Channel.cpp $(MKDEPS) $(PINC)
+	$(COMPILE) -c $<
+
+DataBlock.o: @srcdir@/DataBlock.cpp $(MKDEPS) $(EINC)
+	$(COMPILE) -I@srcdir@/tables -c $<
+
+DataFormat.o: @srcdir@/DataFormat.cpp $(MKDEPS) $(PINC)
+	$(COMPILE) -c $<
+
+Socket.o: @srcdir@/Socket.cpp $(MKDEPS) $(CINC)
+	$(COMPILE) @FDSIZE_HACK@ @NETDB_FLAGS@ @HAVE_SOCKADDR_LEN@ -c $<
+
+Resolver.o: @srcdir@/Resolver.cpp $(MKDEPS) $(CINC)
+	$(COMPILE) @RESOLV_INC@ -c $<
+
+Mutex.o: @srcdir@/Mutex.cpp $(MKDEPS) $(CINC)
+	$(COMPILE) @MUTEX_HACK@ -c $<
+
+Thread.o: @srcdir@/Thread.cpp $(MKDEPS) $(CINC)
+	$(COMPILE) @THREAD_KILL@ @HAVE_PRCTL@ -c $<
+
+TelEngine.o: @srcdir@/TelEngine.cpp $(MKDEPS) $(CINC)
+	$(COMPILE) @ATOMIC_OPS@ @HAVE_GMTOFF@ @HAVE_INT_TZ@ -c $<
+
+Client.o: @srcdir@/Client.cpp $(MKDEPS) $(CLINC)
+	$(COMPILE) -c $<
+
+ClientLogic.o: @srcdir@/ClientLogic.cpp $(MKDEPS) $(CLINC)
+	$(COMPILE) -c $<
+
+String.o: @srcdir@/String.cpp $(MKDEPS) $(CINC)
+	$(COMPILE) $(REGEX_INC) -c $<
+
+regex.o: @top_srcdir@/engine/regex/regex.c $(MKDEPS)
+	$(CCOMPILE) -DSTDC_HEADERS $(REGEX_INC) -c $<
+
+MacOSXUtils.o: @top_srcdir@/engine/macosx/MacOSXUtils.mm $(MKDEPS)
+	$(OBJCCOMPILE) $(MACOSX_INC) -c $<
+
+%.o: @srcdir@/%.cpp $(MKDEPS) $(EINC)
+	$(COMPILE) -c $<
+
+Makefile: @srcdir@/Makefile.in $(MKDEPS)
+	cd .. && ./config.status
+
+../$(YLIB): $(LIBOBJS) $(LIBS)
+	$(LINK) -o $@ $(SONAME_OPT)$(YLIB) $^ $(LIBTHR) $(LIBAUX) $(MACOSX_LIB) @RESOLV_LIB@

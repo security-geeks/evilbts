@@ -1,0 +1,86 @@
+#! /bin/sh
+
+# run
+# This file is part of the YATE Project http://YATE.null.ro
+#
+# This is a generated file. You should never need to modify it.
+# Take a look at the source file run.in instead.
+#
+# Yet Another Telephony Engine - a fully featured software PBX and IVR
+# Copyright (C) 2005-2014 Null Team
+#
+# This software is distributed under multiple licenses;
+# see the COPYING file in the main directory for licensing
+# information for this specific distribution.
+#
+# This use of this software may be subject to additional restrictions.
+# See the LEGAL file in the main directory for details.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+# Script to run Yate from the build directory, optionally under gdb or valgrind
+
+yate="./yate"
+set_conf="-c ./conf.d"
+set_mods="-m ./modules"
+set_share="-e ./share"
+if [ "$1" = "--executable" ]; then
+    shift
+    yate="$1"
+    shift
+fi
+if [ "$1" = "--there" ]; then
+    shift
+    cd `dirname "$0"`
+    wd=`pwd`
+    set_conf="-c $wd/conf.d"
+    set_mods="-m $wd/modules"
+    set_share="-e $wd/share"
+fi
+if [ "$1" = "--gdb" ]; then
+    shift
+    yate="gdb --args $yate"
+fi
+if [ "$1" = "--core" ]; then
+    shift
+    yate="gdb $yate core*"
+    set_conf=""
+    set_mods=""
+fi
+if [ "$1" = "--backtrace" ]; then
+    shift
+    yate="gdb -x tools/gdb-bt-all.txt $yate core*"
+    set_conf=""
+    set_mods=""
+    exec </dev/null 2>&1
+fi
+if [ "$1" = "--valgrind" ]; then
+    shift
+    yate="valgrind $1 $yate"
+    shift
+fi
+if [ "$1" = "--callgrind" ]; then
+    shift
+    export LD_BIND_NOW=yes
+    yate="valgrind --tool=callgrind --dump-instr=yes --simulate-cache=yes --zero-before=*TelEngine*Engine*internalStatisticsStart* $1 $yate -Du"
+    shift
+fi
+
+for opt in $@; do
+    case "$opt" in
+	-c)
+	    set_conf=
+	    ;;
+	-m)
+	    set_mods=
+	    ;;
+	-e)
+	    set_share=
+	    ;;
+    esac
+done
+
+LD_LIBRARY_PATH=.@H323_RUN@:$LD_LIBRARY_PATH PWLIB_ASSERT_ACTION=C exec $yate $set_conf $set_mods $set_share "$@"

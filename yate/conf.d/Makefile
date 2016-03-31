@@ -1,0 +1,39 @@
+# Makefile
+# This file holds the make rules for the Telephony Engine config files
+
+# override DESTDIR at install time to prefix the install directory
+DESTDIR :=
+
+prefix = /usr/local
+confdir = ${prefix}/etc/yate
+
+# include optional local make rules
+-include YateLocal.mak
+
+.PHONY: all
+all:
+
+# Install .sample files only if we don't have other versions
+.PHONY: install
+install:
+	@mkdir -p "$(DESTDIR)$(confdir)/" && \
+	lst="`ls -1 ./*.conf ./*.sample ./*.default 2>/dev/null | sed 's/\.sample//g; s/\.default//g; s/[^ ]*\*\.[^ ]*//g' | sort | uniq`" ; \
+	for s in $$lst; do \
+	    d="$(DESTDIR)$(confdir)/`echo $$s | sed 's,.*/,,'`" ; \
+	    if [ -f "$$d" ]; then \
+		echo "Not overwriting existing $$d" ; \
+	    else \
+		if [ ! -f "$$s" ]; then \
+		    test -f "$$s.default" && s="$$s.default" ; \
+		    test -f "$$s.sample" && s="$$s.sample" ; \
+		fi ; \
+		install -m 0644 "$$s" "$$d" ; \
+	    fi ; \
+	done
+
+.PHONY: uninstall
+uninstall:
+	@-rmdir "$(DESTDIR)$(confdir)" || echo "Remove conf files by hand if you want so"
+
+Makefile: ./Makefile.in ../config.status
+	cd .. && ./config.status

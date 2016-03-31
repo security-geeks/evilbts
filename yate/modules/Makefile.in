@@ -1,0 +1,479 @@
+# Makefile
+# This file holds the make rules for the Telephony Engine modules
+
+# override DESTDIR at install time to prefix the install directory
+DESTDIR :=
+
+# override DEBUG at compile time to enable full debug or remove it all
+DEBUG :=
+
+YATE_VERSION := @PACKAGE_VERSION@
+YATE_RELEASE := @PACKAGE_STATUS@@PACKAGE_RELEASE@
+YATE_REVISION:= @PACKAGE_REVISION@
+
+CC  := @CC@ -Wall
+CXX := @CXX@ -Wall
+MOC := @QT4_MOC@
+QT4_INC := @QT4_INC@
+QT4_LIB := @QT4_LIB@
+QT4_INC_NET := @QT4_INC_NET@
+QT4_LIB_NET := @QT4_LIB_NET@
+QT4_STATIC_MODULES :=
+HAVE_PGSQL := @HAVE_PGSQL@
+PGSQL_INC := @PGSQL_INC@
+PGSQL_LIB := @PGSQL_LIB@
+HAVE_MYSQL := @HAVE_MYSQL@
+MYSQL_INC := @MYSQL_INC@
+MYSQL_LIB := @MYSQL_LIB@
+HAVE_SQLITE := @HAVE_SQLITE@
+SQLITE_INC := @SQLITE_INC@
+SQLITE_LIB := @SQLITE_LIB@
+HAVE_SPANDSP := @HAVE_SPANDSP@
+SPANDSP_INC := @SPANDSP_INC@
+SPANDSP_LIB := @SPANDSP_LIB@
+HAVE_OPENSSL := @HAVE_OPENSSL@
+OPENSSL_INC := @OPENSSL_INC@
+OPENSSL_LIB := @OPENSSL_LIB@
+HAVE_ZLIB := @HAVE_ZLIB@
+ZLIB_INC := @ZLIB_INC@
+ZLIB_LIB := @ZLIB_LIB@
+HAVE_LIBUSB := @HAVE_LIBUSB@
+LIBUSB_INC := @LIBUSB_INC@
+LIBUSB_LIB := @LIBUSB_LIB@
+SED := sed
+DEFS :=
+INCLUDES := -I.. -I@top_srcdir@
+CFLAGS := @CFLAGS@ @MODULE_CFLAGS@ @INLINE_FLAGS@
+CPPFLAGS := @CFLAGS@ @MODULE_CPPFLAGS@ @INLINE_FLAGS@
+LDFLAGS:= @LDFLAGS@
+YATELIBS:= -L.. -lyate @LIBS@
+MODFLAGS:= @MODULE_LDFLAGS@
+MODRELAX:= @MODULE_LDRELAX@
+MODSTRIP:= @MODULE_SYMBOLS@
+INCFILES := @top_srcdir@/yateclass.h @top_srcdir@/yatengine.h @top_srcdir@/yatephone.h ../yateversn.h
+
+JUSTSIG := server/ysigchan.yate server/analog.yate \
+	server/ciscosm.yate server/sigtransport.yate \
+	sig/isupmangler.yate sig/ss7_lnp_ansi.yate \
+	sig/camel_map.yate
+
+SUBDIRS :=
+MKDEPS  := ../config.status
+PROGS := cdrbuild.yate cdrcombine.yate cdrfile.yate regexroute.yate \
+	tonegen.yate tonedetect.yate wavefile.yate \
+	extmodule.yate conference.yate moh.yate pbx.yate \
+	dumbchan.yate callfork.yate mux.yate \
+	yrtpchan.yate ystunchan.yate \
+	ysipchan.yate \
+	yiaxchan.yate \
+	yjinglechan.yate jabber/jabberserver.yate jabber/jbfeatures.yate \
+	ysockschan.yate filetransfer.yate fileinfo.yate \
+	gvoice.yate \
+	javascript.yate \
+	server/pbxassist.yate server/dbpbx.yate server/lateroute.yate \
+	server/park.yate server/queues.yate server/queuesnotify.yate \
+	server/regfile.yate server/accfile.yate server/register.yate \
+	server/callcounters.yate server/cpuload.yate server/ccongestion.yate \
+	server/dbwave.yate \
+	server/yradius.yate \
+	server/ysnmpagent.yate \
+	server/monitoring.yate \
+	server/sipfeatures.yate \
+	sip/sip_cnam_lnp.yate \
+	server/heartbeat.yate server/clustering.yate \
+	server/mgcpgw.yate server/mgcpca.yate \
+	server/mrcpspeech.yate \
+	server/presence.yate server/subscription.yate \
+	server/users.yate \
+	$(JUSTSIG) \
+	server/analogdetect.yate \
+	server/cache.yate \
+	server/eventlogs.yate \
+	client/jabberclient.yate \
+	callgen.yate analyzer.yate rmanager.yate msgsniff.yate \
+	radio/dummyradio.yate
+
+LIBS :=
+DIRS := client server jabber qt4 sip sig radio
+
+ifneq ($(HAVE_PGSQL),no)
+PROGS := $(PROGS) server/pgsqldb.yate
+endif
+
+ifneq ($(HAVE_MYSQL),no)
+PROGS := $(PROGS) server/mysqldb.yate
+endif
+
+ifneq ($(HAVE_SQLITE),no)
+PROGS := $(PROGS) server/sqlitedb.yate
+endif
+
+ifneq (@HAVE_RESOLV@,no)
+PROGS := $(PROGS) enumroute.yate
+endif
+
+ifneq (@HAVE_SOUNDCARD@,no)
+PROGS := $(PROGS) client/osschan.yate
+endif
+
+ifneq (@HAVE_ALSA@,no)
+PROGS := $(PROGS) client/alsachan.yate
+endif
+
+ifneq (@HAVE_COREAUDIO@,no)
+PROGS := $(PROGS) client/coreaudio.yate
+endif
+
+ifneq (@HAVE_QT4@,no)
+ifeq (@QT4_STATIC_MODULES@,no)
+PROGS := $(PROGS) qt4/updater.yate qt4/customtable.yate qt4/customtext.yate \
+	qt4/customtree.yate qt4/widgetlist.yate qt4/clientarchive.yate
+endif
+endif
+
+ifneq (@HAVE_ZAP@,no)
+PROGS := $(PROGS) server/zapcard.yate
+endif
+
+ifneq (@HAVE_WANPIPE@,no)
+ifeq (@BUILD_WPCARD@,yes)
+PROGS := $(PROGS) server/wpcard.yate
+endif
+ifeq (@HAVE_WANPIPE_TDM@,yes)
+ifeq (@BUILD_TDMCARD@,yes)
+PROGS := $(PROGS) server/tdmcard.yate
+endif
+endif
+endif
+
+ifneq (@HAVE_SCTP_NETINET@,no)
+PROGS := $(PROGS) server/lksctp.yate
+endif
+
+ifneq ($(HAVE_SPANDSP),no)
+PROGS := $(PROGS) faxchan.yate
+endif
+
+ifneq (@HAVE_H323@,no)
+PROGS := $(PROGS) h323chan.yate
+endif
+
+ifneq (@HAVE_GSM@,no)
+PROGS := $(PROGS) gsmcodec.yate
+endif
+
+ifneq (@HAVE_ILBC@,no)
+PROGS := $(PROGS) ilbccodec.yate
+endif
+
+ifneq (@HAVE_ILBCWR@,no)
+PROGS := $(PROGS) ilbcwebrtc.yate
+endif
+
+ifneq (@HAVE_ISAC@,no)
+PROGS := $(PROGS) isaccodec.yate
+endif
+
+ifneq (@HAVE_SPEEX@,no)
+PROGS := $(PROGS) speexcodec.yate
+endif
+
+ifneq (@HAVE_AMRNB@,no)
+PROGS := $(PROGS) amrnbcodec.yate
+PROGS := $(PROGS) efrcodec.yate
+endif
+
+ifneq ($(HAVE_OPENSSL),no)
+PROGS := $(PROGS) openssl.yate
+endif
+
+ifneq ($(HAVE_ZLIB),no)
+PROGS := $(PROGS) zlibcompress.yate
+endif
+
+ifeq (@HAVE_MALLINFO@,yes)
+MALLINFO_DEF := -DHAVE_MALLINFO
+endif
+
+ifeq (@HAVE_COREDUMPER@,yes)
+COREDUMP_INC := -DHAVE_COREDUMPER @COREDUMPER_INC@
+COREDUMP_LIB := @COREDUMPER_LIB@
+endif
+
+ifneq (@HAVE_LIBUSB@,no)
+PROGS := $(PROGS) radio/ybladerf.yate
+endif
+
+
+LOCALFLAGS =
+LOCALLIBS =
+EXTERNFLAGS =
+EXTERNLIBS =
+CCOMPILE = $(CC) $(DEFS) $(DEBUG) $(INCLUDES) $(CFLAGS)
+COMPILE = $(CXX) $(DEFS) $(DEBUG) $(INCLUDES) $(CPPFLAGS)
+LINK = $(CXX) $(LDFLAGS)
+MODLINK = $(CXX) $(MODFLAGS) $(MODSTRIP) $(LDFLAGS)
+MODCOMP = $(COMPILE) $(MODFLAGS) $(MODSTRIP) $(LDFLAGS)
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+moddir = @libdir@/yate
+
+# include optional local make rules
+-include YateLocal.mak
+
+.PHONY: all debug ddebug xdebug
+all: subdirs do-all $(LIBS) $(PROGS)
+
+debug:
+	$(MAKE) all DEBUG=-g3 MODSTRIP=
+
+ddebug:
+	$(MAKE) all DEBUG='-g3 -DDEBUG' MODSTRIP=
+
+xdebug:
+	$(MAKE) all DEBUG='-g3 -DXDEBUG' MODSTRIP=
+
+.PHONY: strip
+strip: all do-strip
+	strip --strip-debug --discard-locals $(PROGS)
+
+.PHONY: clean
+clean: do-clean
+	@-$(RM) $(PROGS) $(LIBS) *.o qt4/*.o qt4/*.moc core 2>/dev/null
+	@-for i in $(PROGS) ; do \
+	    $(RM) -rf $$i.dSYM 2>/dev/null; \
+	done;
+
+.PHONY: install
+install: all do-install
+	@mkdir -p "$(DESTDIR)$(moddir)/" && \
+	for i in $(DIRS) ; do \
+	    mkdir -p "$(DESTDIR)$(moddir)/$$i" ; \
+	done; \
+	for i in $(PROGS) ; do \
+	    @INSTALL_D@ @INSTALL_L@ "$$i" "$(DESTDIR)$(moddir)/$$i" ; \
+	done;
+
+.PHONY: uninstall
+uninstall: do-uninstall
+	@-for i in $(PROGS) ; do \
+	    rm "$(DESTDIR)$(moddir)/$$i" ; \
+	done; \
+	for i in $(DIRS) $(SUBDIRS) ; do \
+	    rmdir "$(DESTDIR)$(moddir)/$$i" ; \
+	done;
+	@-rmdir "$(DESTDIR)$(moddir)"
+
+.PHONY: subdirs
+subdirs:
+	@mkdir -p $(DIRS)
+
+qt4/%.o: @srcdir@/qt4/%.cpp $(MKDEPS) $(INCFILES)
+	$(MAKE) $(patsubst %.o,%.moc,$@)
+	$(COMPILE) -c -o $@ $(QT4_INC) -I@top_srcdir@/clients/qt4 -I@srcdir@/qt4 $<
+
+%.o: @srcdir@/%.cpp $(MKDEPS) $(INCFILES)
+	$(COMPILE) -c $<
+
+do-all do-strip do-clean do-install do-uninstall:
+	$(if $(SUBDIRS),\
+	@target=`echo $@ | $(SED) -e 's/^do-//'`; \
+	for i in $(SUBDIRS) ; do \
+	    if test -f ./$$i/Makefile ; then \
+		$(MAKE) -C ./$$i $${target} || exit 1;\
+	    fi; \
+	done \
+	)
+
+Makefile: @srcdir@/Makefile.in $(MKDEPS)
+	cd .. && ./config.status
+
+lib%.so: %.o
+	$(LINK) -shared -o $@ $^ $(YATELIBS)
+
+server/%.yate: @srcdir@/server/%.cpp $(MKDEPS) $(INCFILES)
+	mkdir -p server && $(MODCOMP) -o $@ $(LOCALFLAGS) $(EXTERNFLAGS) $< $(LOCALLIBS) $(YATELIBS) $(EXTERNLIBS)
+
+client/%.yate: @srcdir@/client/%.cpp $(MKDEPS) $(INCFILES)
+	mkdir -p client && $(MODCOMP) -o $@ $(LOCALFLAGS) $(EXTERNFLAGS) $< $(LOCALLIBS) $(YATELIBS) $(EXTERNLIBS)
+
+qt4/%.yate: @srcdir@/qt4/%.cpp ../libyateqt4.so $(MKDEPS) $(INCFILES)
+	$(MAKE) $(patsubst %.yate,%.moc,$@)
+	$(MODCOMP) -o $@ $(LOCALFLAGS) $(QT4_INC) $(EXTERNFLAGS) -I@top_srcdir@/clients/qt4 -Iqt4 $< $(LOCALLIBS) ../libyateqt4.so $(YATELIBS) $(QT4_LIB) $(EXTERNLIBS)
+
+qt4/%.moc: @srcdir@/qt4/%.h $(MKDEPS) $(INCFILES)
+	mkdir -p qt4 && $(MOC) $(DEFS) $(INCLUDES) $(QT4_INC) -I@top_srcdir@/clients/qt4 -I@srcdir@/qt4 -o $@ $<
+
+sig/%.yate: @srcdir@/sig/%.cpp $(MKDEPS) $(INCFILES)
+	mkdir -p sig && $(MODCOMP) -o $@ $(LOCALFLAGS) $(EXTERNFLAGS) $< $(LOCALLIBS) $(YATELIBS) $(EXTERNLIBS)
+
+sip/%.yate: @srcdir@/sip/%.cpp $(MKDEPS) $(INCFILES)
+	mkdir -p sip && $(MODCOMP) -o $@ $(LOCALFLAGS) $(EXTERNFLAGS) $< $(LOCALLIBS) $(YATELIBS) $(EXTERNLIBS)
+
+%.yate: @srcdir@/%.cpp $(MKDEPS) $(INCFILES)
+	$(MODCOMP) -o $@ $(LOCALFLAGS) $(EXTERNFLAGS) $< $(LOCALLIBS) $(YATELIBS) $(EXTERNLIBS)
+
+# Take special care of the modules that depend on optional libs
+
+$(JUSTSIG) server/wpcard.yate server/tdmcard.yate server/zapcard.yate: ../libyatesig.so
+$(JUSTSIG): LOCALFLAGS = -I@top_srcdir@/libs/ysig
+server/wpcard.yate server/tdmcard.yate: LOCALFLAGS = -I@top_srcdir@/libs/ysig @WANPIPE_FLAGS@
+server/zapcard.yate: LOCALFLAGS = -I@top_srcdir@/libs/ysig @ZAP_FLAGS@
+$(JUSTSIG) server/wpcard.yate server/tdmcard.yate server/zapcard.yate: LOCALLIBS = -lyatesig
+
+sig/ss7_lnp_ansi.yate: LOCALFLAGS = -I@top_srcdir@/libs/ysig -I@top_srcdir@/libs/yasn
+sig/ss7_lnp_ansi.yate: LOCALLIBS = -lyatesig -lyateasn
+
+sig/camel_map.yate: ../libs/yasn/libyasn.a
+sig/camel_map.yate: LOCALFLAGS = -I@top_srcdir@/libs/ysig -I@top_srcdir@/libs/yasn
+sig/camel_map.yate: LOCALLIBS = -lyatesig -lyateasn
+
+server/analogdetect.yate: ../libs/ymodem/libyatemodem.a
+server/analogdetect.yate: LOCALFLAGS = -I@top_srcdir@/libs/ymodem
+server/analogdetect.yate: LOCALLIBS = -L../libs/ymodem -lyatemodem
+
+h323chan.yate: EXTERNFLAGS = @H323_INC@
+h323chan.yate: EXTERNLIBS = @H323_LIB@
+
+server/pgsqldb.yate: EXTERNFLAGS = $(PGSQL_INC)
+server/pgsqldb.yate: EXTERNLIBS = $(PGSQL_LIB)
+
+server/mysqldb.yate: EXTERNFLAGS = $(MYSQL_INC)
+server/mysqldb.yate: EXTERNLIBS = $(MYSQL_LIB)
+
+server/sqlitedb.yate: EXTERNFLAGS = $(SQLITE_INC)
+server/sqlitedb.yate: EXTERNLIBS = $(SQLITE_LIB)
+
+client/alsachan.yate: EXTERNLIBS = -lasound
+
+client/coreaudio.yate: EXTERNLIBS = -framework CoreServices -framework CoreAudio -framework AudioUnit -framework AudioToolbox
+
+yiaxchan.yate: ../libs/yiax/libyateiax.a
+yiaxchan.yate: LOCALFLAGS = -I@top_srcdir@/libs/yiax
+yiaxchan.yate: LOCALLIBS = -L../libs/yiax -lyateiax
+
+yjinglechan.yate jabber/jabberserver.yate jabber/jbfeatures.yate client/jabberclient.yate: ../libyatejabber.so
+yjinglechan.yate jabber/jabberserver.yate jabber/jbfeatures.yate client/jabberclient.yate: LOCALFLAGS = -I@top_srcdir@/libs/yjabber
+yjinglechan.yate jabber/jabberserver.yate jabber/jbfeatures.yate client/jabberclient.yate: LOCALLIBS = -lyatejabber
+
+server/dbpbx.yate server/pbxassist.yate: ../libs/ypbx/libyatepbx.a
+server/dbpbx.yate server/pbxassist.yate: LOCALFLAGS = -I@top_srcdir@/libs/ypbx
+server/dbpbx.yate server/pbxassist.yate: LOCALLIBS = -L../libs/ypbx -lyatepbx
+
+server/mgcpca.yate: ../libyatemgcp.so ../libyatesig.so ../libs/ysdp/libyatesdp.a
+server/mgcpca.yate: LOCALFLAGS = -I@top_srcdir@/libs/ymgcp -I@top_srcdir@/libs/ysig -I@top_srcdir@/libs/ysdp
+server/mgcpca.yate: LOCALLIBS = -lyatemgcp -lyatesig -L../libs/ysdp -lyatesdp
+
+server/mgcpgw.yate: ../libyatemgcp.so ../libs/ysdp/libyatesdp.a
+server/mgcpgw.yate: LOCALFLAGS = -I@top_srcdir@/libs/ymgcp -I@top_srcdir@/libs/ysdp
+server/mgcpgw.yate: LOCALLIBS = -lyatemgcp -L../libs/ysdp -lyatesdp
+
+server/lksctp.yate: EXTERNFLAGS = @SCTP_FLAGS@
+server/lksctp.yate: EXTERNLIBS = -lsctp
+
+ilbccodec.yate: ../libs/ilbc/libilbc.a
+ilbccodec.yate: LOCALFLAGS = @ILBC_INC@
+ilbccodec.yate: LOCALLIBS = -L../libs/ilbc -lilbc
+
+ilbcwebrtc.yate: ../libs/miniwebrtc/libminiwebrtc.a
+ilbcwebrtc.yate: LOCALFLAGS = @ILBCWR_INC@ -I@top_srcdir@/libs/miniwebrtc/audio/common/processing -I@top_srcdir@/libs/miniwebrtc
+ilbcwebrtc.yate: LOCALLIBS = -L../libs/miniwebrtc -lminiwebrtc
+
+isaccodec.yate: ../libs/miniwebrtc/libminiwebrtc.a
+isaccodec.yate: LOCALFLAGS = @ISAC_INC@ -I@top_srcdir@/libs/miniwebrtc/audio/common/processing -I@top_srcdir@/libs/miniwebrtc
+isaccodec.yate: LOCALLIBS = -L../libs/miniwebrtc -lminiwebrtc
+
+gsmcodec.yate: EXTERNFLAGS = @GSM_INC@
+gsmcodec.yate: EXTERNLIBS = @GSM_LIB@
+
+speexcodec.yate: EXTERNFLAGS = @SPEEX_INC@
+speexcodec.yate: EXTERNLIBS = @SPEEX_LIB@
+
+amrnbcodec.yate efrcodec.yate: EXTERNFLAGS = @AMRNB_INC@
+amrnbcodec.yate efrcodec.yate: EXTERNLIBS = @AMRNB_LIB@
+
+faxchan.yate: EXTERNFLAGS = $(SPANDSP_INC)
+faxchan.yate: EXTERNLIBS = $(SPANDSP_LIB)
+
+ysipchan.yate: ../libs/ysip/libyatesip.a ../libs/ysdp/libyatesdp.a
+ysipchan.yate: LOCALFLAGS = -I@top_srcdir@/libs/ysip -I@top_srcdir@/libs/ysdp
+ysipchan.yate: LOCALLIBS = -L../libs/ysip -lyatesip -L../libs/ysdp -lyatesdp
+
+yrtpchan.yate: ../libs/yrtp/libyatertp.a
+yrtpchan.yate: LOCALFLAGS = -I@top_srcdir@/libs/yrtp
+yrtpchan.yate: LOCALLIBS = -L../libs/yrtp -lyatertp
+
+openssl.yate: EXTERNFLAGS = $(OPENSSL_INC)
+openssl.yate: EXTERNLIBS = $(OPENSSL_LIB)
+
+rmanager.yate: EXTERNFLAGS = $(COREDUMP_INC) $(MALLINFO_DEF)
+rmanager.yate: EXTERNLIBS = $(COREDUMP_LIB)
+
+qt4/updater.yate: EXTERNFLAGS = $(QT4_INC_NET)
+qt4/updater.yate: EXTERNLIBS = $(QT4_LIB_NET)
+
+javascript.yate: ../libyatescript.so ../libs/ypbx/libyatepbx.a
+javascript.yate: LOCALFLAGS = -I@top_srcdir@/libs/yscript -I@top_srcdir@/libs/ypbx
+javascript.yate: LOCALLIBS = -lyatescript -L../libs/ypbx -lyatepbx
+
+zlibcompress.yate: EXTERNFLAGS = $(ZLIB_INC)
+zlibcompress.yate: EXTERNLIBS = $(ZLIB_LIB)
+
+server/ysnmpagent.yate: ../libyateasn.so ../libs/ysnmp/libysnmp.a
+server/ysnmpagent.yate: LOCALFLAGS = -I@top_srcdir@/libs/yasn -I@top_srcdir@/libs/ysnmp
+server/ysnmpagent.yate: LOCALLIBS = -L../libs/ysnmp -lysnmp -lyateasn
+
+radio/ybladerf.yate radio/dummyradio.yate: ../libyateradio.so
+radio/ybladerf.yate radio/dummyradio.yate: LOCALFLAGS = -I@top_srcdir@/libs/yradio
+radio/ybladerf.yate radio/dummyradio.yate: LOCALLIBS = -lyateradio
+radio/ybladerf.yate: EXTERNFLAGS = $(LIBUSB_INC)
+radio/ybladerf.yate: EXTERNLIBS = $(LIBUSB_LIB)
+
+../libyatesig.so ../libs/ysig/libyatesig.a: @top_srcdir@/libs/ysig/yatesig.h
+	$(MAKE) -C ../libs/ysig
+
+../libs/ilbc/libilbc.a:
+	$(MAKE) -C ../libs/ilbc
+
+../libs/miniwebrtc/libminiwebrtc.a:
+	$(MAKE) -C ../libs/miniwebrtc
+
+../libs/ysip/libyatesip.a: @top_srcdir@/libs/ysip/yatesip.h
+	$(MAKE) -C ../libs/ysip
+
+../libs/yrtp/libyatertp.a: @top_srcdir@/libs/yrtp/yatertp.h
+	$(MAKE) -C ../libs/yrtp
+
+../libs/ysdp/libyatesdp.a: @top_srcdir@/libs/ysdp/yatesdp.h
+	$(MAKE) -C ../libs/ysdp
+
+../libs/yiax/libyateiax.a: @top_srcdir@/libs/yiax/yateiax.h
+	$(MAKE) -C ../libs/yiax
+
+../libyatemgcp.so ../libs/ymgcp/libyatemgcp.a: @top_srcdir@/libs/ymgcp/yatemgcp.h
+	$(MAKE) -C ../libs/ymgcp
+
+../libs/ymodem/libyatemodem.a: @top_srcdir@/libs/ymodem/yatemodem.h
+	$(MAKE) -C ../libs/ymodem
+
+../libyatejabber.so ../libs/yjabber/libyatejabber.a: @top_srcdir@/libs/yjabber/xmpputils.h @top_srcdir@/libs/yjabber/yatejabber.h @top_srcdir@/libs/yjabber/yatejingle.h
+	$(MAKE) -C ../libs/yjabber
+
+../libyatescript.so ../libs/yjabber/libyatescript.a: @top_srcdir@/libs/yscript/yatescript.h
+	$(MAKE) -C ../libs/yscript
+
+../libs/ypbx/libyatepbx.a: @top_srcdir@/libs/ypbx/yatepbx.h
+	$(MAKE) -C ../libs/ypbx
+
+../libyateqt4.so: @top_srcdir@/clients/qt4/qt4client.h
+	$(MAKE) -C ../clients/qt4
+
+../libyateasn.so ../libs/yasn/libyasn.a: @top_srcdir@/libs/yasn/yateasn.h
+	$(MAKE) -C ../libs/yasn
+
+../libs/ysnmp/libysnmp.a: @top_srcdir@/libs/ysnmp/yatesnmp.h
+	$(MAKE) -C ../libs/ysnmp
+
+../libyateradio.so ../libs/yradio/libyateradio.a: @top_srcdir@/libs/yradio/yateradio.h
+	$(MAKE) -C ../libs/yradio

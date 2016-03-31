@@ -1,0 +1,34 @@
+<markup><big><b>Main Window</b></big>
+
+<p>
+The Yate Client main menu has the following options:
+</p>
+<p>
+- <b>Yate</b> offers the possibility to: 
+Join a chat room, access message Archive,
+logging using another account (either through
+the wizard or directly). You can also toggle 
+between normal and advanced mode.
+</p>
+<p>
+- <b>Settings</b> to make changes to some global
+attributes of the program.
+<p>
+- <b>Friends</b> shows commands applicable to 
+chat accounts, but also to vizualize the list 
+or adding a new subscription.
+</p>
+<p>
+- <b>Status</b> changes the way you appear in 
+your Friends list or can log you out when choosing
+offline.
+</p>
+<p>
+The main window of Yate Client also allows you 
+to switch between the <b>Chat</b> and <b>Telephony</b>
+ interface by clicking the corresponding tabs.
+</p>
+<p>
+
+
+</markup><!-- pango -->

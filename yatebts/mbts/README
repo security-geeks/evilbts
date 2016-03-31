@@ -1,0 +1,37 @@
+Welcome to the MBTS section of Yate-BTS, a derivation of OpenBTS.
+(Note: OpenBTS is a trademark of Range Networks, Inc., not affiliated with
+the developers or supporters of MBTS.)
+
+
+For additional information and support, refer to http://yatebts.com.
+
+
+These are the directories:
+
+CommonLib	Common-use libraries, mostly C++ wrappers for basic facilities.
+Control		Control-layer functions for the protocols of GSM 04.08 and SIP.
+GSM		The GSM stack.
+RRLP		Radio Resource Location Protocol
+TRXManager	The interface between the GSM stack and the radio.
+Transceiver	The software transceiver and specific installation tests.
+apps		OpenBTS application binaries.
+
+
+
+By default, OpenBTS assumes the following UDP port assignments:
+
+5060 -- Yate SIP interface
+XXXX -- Yate-BTS/MBTS socket interface
+5700-range -- OpenBTS-transceiver interface
+
+These can be controlled in the CONFIG table in /etc/OpenBTS.db.
+
+Standrd paths:
+/OpenBTS -- Binary installation and authorization keys.
+/etc/OpenBTS -- Configuration databases.
+/var/run/OpenBTS -- Real-time reporting databases.
+
+The script apps/setUpFiles.sh will create these directories and install the
+correct files in them.
+
+

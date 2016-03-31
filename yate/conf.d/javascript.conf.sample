@@ -1,0 +1,52 @@
+[general]
+; General settings for the Javascript module
+
+; scripts_dir: string: The absolute or relative path used by default to load
+;  scripts if no full path is specified
+;scripts_dir=${sharedpath}/scripts
+
+; include_dir: string: The absolute or relative path used when including other
+;  files via #include or #require if no full path is specified
+; If the file is not found in include_dir it will be searched in scripts_dir
+;include_dir=${configpath}
+
+; routing: string: Name of the file holding the routing instructions
+; Example: routing=route.js
+;routing=
+
+; allow_abort: boolean: Allow messages on level DebugFail to cause an engine abort
+; Never enable it in production!
+;allow_abort=no
+
+; allow_trace: boolean: Allow the scripts to specify a trace file
+; Never enable it in production!
+;allow_trace=no
+
+; allow_link: boolean: Allow linking of Javascript code (jump resolving)
+;allow_link=yes
+
+; auto_extensions: boolean: Automatically load scripting extensions in new scripts
+; This does not prevent script code from explicitly loading extensions
+;auto_extensions=yes
+
+
+[scripts]
+; Add one entry in this section for each script that is to be loaded on Yate startup
+; Each line has to be on the form:
+;   name=script_file_name
+; The name must be unique and it will identify the running script instance.
+; The file name should hold either the absolute path and name or the path
+;  and name relative to the scripts_dir in section [general]
+; Examples:
+;  faxes=fax_handler.js
+;  callback=js_lib/callback.js
+
+; The Eliza chat bot, enabled by default for your enjoyment in rmanager
+eliza=eliza.js
+
+
+[late_scripts]
+; Add one entry in this section for each script that is to be loaded after Yate startup
+; These scripts are loaded only after the engine and modules have initialized, immediately
+;  after the dispatching of the "engine.start" message.
+; The names must be unique and different from any in the [scripts] section.

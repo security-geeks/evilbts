@@ -1,0 +1,82 @@
+.\"
+.\" YATE - Yet Another Telephony Engine
+.\"
+.\" This software is distributed under multiple licenses;
+.\" see the COPYING file in the main directory for licensing
+.\" information for this specific distribution.
+.\"
+.\" This use of this software may be subject to additional restrictions.
+.\" See the LEGAL file in the main directory for details.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.\"
+.\"
+.TH YATE-CONFIG 8 "September 2007" "YATE" "Telephony Engine"
+.SH NAME
+\fByate-config\fP \- retrieve metainformation about the YATE telephony engine
+.SH SYNOPSIS
+.B yate-config
+.RI [options]
+.SH DESCRIPTION
+The
+.B yate-config
+program is used to retrieve information about the installed YATE engine.
+It is typically used to compile and link modules against the engine's library.
+
+Here is a typical usage scenario in a Makefile:
+
+module.yate: module.cpp
+    g++ `yate-config --c-all --ldflags` module.cpp `yate-config --libs`
+
+.SH OPTIONS
+.SS Version and paths
+.TP
+.B \-\-version
+Reports the installed YATE version (in x.y.z format)
+.TP
+.B \-\-release
+Reports the installed YATE code status (if not release) and release number
+.TP
+.B \-\-config
+Returns the configuration files directory
+.TP
+.B \-\-modules
+Returns the modules directory
+.TP
+.B \-\-share
+Returns the base shared directory
+.TP
+.B \-\-scripts
+Returns the scripts directory
+.TP
+.B \-\-skins
+Returns the base skins directory
+.SS Compiler flags
+.TP
+.B \-\-cflags
+Various C++ compiler flags
+.TP
+.B \-\-includes
+Include option and path to the header files
+.TP
+.B \-\-c\-all
+All compiler options \- the above two concatenated
+.SS Linker flags
+.TP
+.B \-\-ldflags
+Various linker flags
+.TP
+.B \-\-libs
+Library option and libraries names
+.TP
+.B \-\-ld\-all
+All linker options \- the above two concatenated
+.SH AUTHORS
+Paul Chitescu <paulc@voip.null.ro>
+.br
+Diana Cionoiu <diana@voip.null.ro>
+.SH SEE ALSO
+.BR yate (8),
+.BR pkg-config (1)

@@ -1,0 +1,30 @@
+# Makefile
+# This file holds the make rules for Yate client help files
+
+# override DESTDIR at install time to prefix the install directory
+DESTDIR :=
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+datarootdir = @datarootdir@
+datadir = @datadir@
+shrdir = $(datadir)/yate
+helpdir = $(shrdir)/help
+
+.PHONY: all clean install uninstall
+all clean:
+
+install:
+	@lst="`cd @srcdir@; ls -1 -d *.yhlp`" ; \
+	mkdir -p "$(DESTDIR)$(helpdir)/" && \
+	for i in $$lst ; do \
+	    @INSTALL_D@ -m 0644 "@srcdir@/$$i" "$(DESTDIR)$(helpdir)/$$i" ; \
+	done;
+
+uninstall:
+	@-rm "$(DESTDIR)$(helpdir)/"*.yhlp
+	@-rmdir "$(DESTDIR)$(helpdir)"
+	@-rmdir "$(DESTDIR)$(shrdir)"
+
+Makefile: @srcdir@/Makefile.in ../../config.status
+	cd ../.. && ./config.status

@@ -1,0 +1,8 @@
+# Makefile
+# This file holds the make rules for the A53 lib
+
+INCLUDES := $(TOP_INCLUDES)
+INCFILES := ../../config.h a5.h bits.h gea.h gprs_cipher.h kasumi.h linuxlist.h utils.h
+
+LIBS := libA53.a
+OBJS := a5.o bits.o gea.o kasumi.o utils.o ifc.o

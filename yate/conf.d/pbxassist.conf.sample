@@ -1,0 +1,216 @@
+[general]
+; Common settings
+
+; enabled: bool: Enable the module and install message handlers
+;enabled=no
+
+; priority: int: Priority to install message handlers into engine
+;priority=15
+
+; default: bool: Assist channels by default, module must be enabled first
+;default=yes
+
+; incoming: bool: Assist incoming calls, needs that default is enabled
+;incoming=yes
+
+; filter: regexp: Expression matching assisted channel IDs, default all
+; Adding a ^ character at the very end reverses the matching mode
+;filter=
+
+; dtmfpass: bool: Enter DTMF pass-through mode by default
+;dtmfpass=no
+
+; dialheld: bool: Dial back from held calls if the control call leg hangs up
+;dialheld=no
+
+; diversion: bool: Honor protocol requested diversion of calls
+;diversion=no
+
+; minlen: int: Minimum length of command sequences
+;minlen=2
+
+; maxlen: int: Maximum length of command sequences
+;maxlen=20
+
+; timeout: int: Inter-digit timeout in milliseconds
+;timeout=30000
+
+; retake: string: Exact sequence (not regexp) to exit DTMF pass-through mode
+;retake=###
+
+; lang: string: Language for tones used by the pbx
+; This parameter can be overridden from routing by a 'pbxlang' parameter
+;lang=
+
+; dropconfhangup: bool: Drop (terminate) the conference room on hangup if the call is in one
+; This parameter can be overridden from routing by a 'pbxdropconfhangup' parameter
+; This parameter is applied on reload
+; Defaults to yes
+;dropconfhangup=yes
+
+; confowner: bool: Make non-guest assistants own the conference rooms they join
+; This parameter can be overridden from routing by a 'pbxconfowner' parameter
+; This parameter is applied on reload
+; Defaults to no
+;confowner=no
+
+; lonelytimeout: integer: The interval (in milliseconds) a lonely user is allowed to
+;  remain in conference
+; This parameter can be overridden from routing by a 'pbxlonelytimeout' parameter
+; This parameter is applied on reload
+; Defaults to 0 (stay until hangup)
+;lonelytimeout=0
+
+
+; Every other section defines an operation to trigger
+;[operation]
+; The name of the section is used as the default operation name
+
+; trigger: regexp: Trigger key sequence
+;trigger=
+
+; operation: string: Operation name, will use section name if missing
+;operation=
+
+; message: string: Message to emit for this operation
+;message=chan.operation
+
+; pbxstates: regexp: Expression matching states allowing operation, default all
+;pbxstates=
+
+; pbxprompt: string: Resource to overlay on audio channel, * for error beep
+;pbxprompt=
+
+; pastekeys: string: Keys to fill in buffer instead of clearing it
+;pastekeys=
+
+; All other parameters are copied in the generated message after having
+;  the \0 .. \9 placeholders replaced with matches from the trigger
+
+
+[transfer]
+; blind transfer: make call on behalf of peer, hangup this
+; key: *1nnnnn*
+trigger=\*1\([0-9]\+\)\*$
+target=\1
+
+[fortransfer]
+; put the peer on hold and dial another number
+; key: *2nnnnn*
+trigger=\*2\([0-9]\+\)\*$
+target=\1
+onhangup=yes
+
+[dotransfer]
+; transfer held to active (2nd) call
+; key: *4
+trigger=\*4$
+
+[onhold]
+; toggle call on/off hold
+; key: *0
+trigger=\*0$
+
+[returnhold]
+; always return to the held peer
+; key: *7
+trigger=\*7$
+
+[conference]
+; put us and peer in an ad-hoc conference or return to conference
+; key: *3
+trigger=\*3$
+
+[returnconf]
+; always return to conference
+; key: *6
+trigger=\*6$
+
+[returntone]
+; always return to a dialtone, hang up peer
+; key: *9
+trigger=\*9$
+;operation=dialtone
+
+[secondcall]
+; hangup the peer and dial another number
+; key: *8nnnnn*
+trigger=\*8\([0-9]\+\)\*$
+target=\1
+
+[seconddial]
+; execute a dial while at dialtone
+; key: nnnn*
+trigger=^\([0-9]\+\)\*$
+pbxstates=dial
+target=\1
+operation=secondcall
+
+[flush]
+; no operation, flush the buffer
+; key: #
+trigger=#$
+operation=
+pbxgreedy=yes
+pbxprompt=tone/info
+
+[flush-dial]
+; flush the buffer, return to dialtone
+; key: #
+trigger=#$
+pbxstates=dial
+pbxgreedy=yes
+pbxprompt=tone/info
+message=call.execute
+callto=tone/dial
+
+[passthrough]
+; enter DTMF pass-through mode
+; key: **
+trigger=\*\*
+pbxprompt=tone/probe/1
+
+[silence]
+; silence the dialtone, keep collecting tones
+; key: n
+trigger=^[0-9]$
+pbxstates=dial
+pastekeys=\0
+pbxgreedy=yes
+message=call.execute
+callto=tone/noise
+
+[collect]
+; keep collecting tones
+; key: nnnn
+trigger=^[0-9]\+$
+pbxstates=dial
+pastekeys=\0
+pbxgreedy=yes
+operation=
+
+[transparent]
+; send a tone as-is to the remote
+; key: n
+trigger=^[0-9]$
+
+
+; Example: flush the key buffer with *#, play the error beep
+;[flush]
+;trigger=\*#$
+;operation=
+;pbxprompt=*
+
+; Example: enter conference named conf/dyn-N with key sequence #N# where N=0..9
+;[conference]
+;trigger=#\([0-9]\)#$
+;message=call.conference
+;room=conf/dyn-\1
+
+;[blessing]
+; allow the remote user to use the PBX functionality - dangerous!
+; key: *9
+;trigger=^\*9$
+;operation=setstate
+;pbxguest=no
+;id=${peerid}

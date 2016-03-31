@@ -1,0 +1,267 @@
+# Makefile
+# This file holds the make rules for the libyatexml
+
+DEBUG :=
+
+CXX  := g++ -Wall
+CC   := gcc -Wall
+AR  := ar
+DEFS :=
+INCLUDES :=  -I. -I./audio/common/processing \
+	     -I./audio/common/vad -I./audio/processing/aec \
+	     -I./audio/processing/aecm -I./audio/processing/agc \
+	     -I./audio/processing/ns -I./audio/processing/utility \
+	     -I./system_wrappers
+
+CFLAGS :=  -O2 -fno-exceptions -fPIC -DHAVE_GCC_FORMAT_CHECK -DHAVE_BLOCK_RETURN  -DWEBRTC_NS_FLOAT=true 
+CPPFLAGS :=  -O2 -Wno-overloaded-virtual  -fno-exceptions -fPIC -DHAVE_GCC_FORMAT_CHECK -DHAVE_BLOCK_RETURN  -DWEBRTC_NS_FLOAT=true
+LDFLAGS:= 
+
+LIBS = libminiwebrtc.a
+OBJS :=  audio/common/resampler/resampler.o \
+	audio/common/processing/auto_correlation.o \
+	audio/common/processing/auto_corr_to_refl_coef.o  \
+	audio/common/processing/complex_bit_reverse.o  \
+	audio/common/processing/complex_fft.o  \
+	audio/common/processing/copy_set_operations.o  \
+	audio/common/processing/cross_correlation.o  \
+	audio/common/processing/division_operations.o  \
+	audio/common/processing/dot_product_with_scale.o  \
+	audio/common/processing/downsample_fast.o  \
+	audio/common/processing/energy.o  \
+	audio/common/processing/filter_ar.o  \
+	audio/common/processing/filter_ar_fast_q12.o  \
+	audio/common/processing/filter_ma_fast_q12.o  \
+	audio/common/processing/get_hanning_window.o  \
+	audio/common/processing/get_scaling_square.o  \
+	audio/common/processing/ilbc_specific_functions.o  \
+	audio/common/processing/levinson_durbin.o  \
+	audio/common/processing/lpc_to_refl_coef.o  \
+	audio/common/processing/min_max_operations.o  \
+	audio/common/processing/randomization_functions.o  \
+	audio/common/processing/refl_coef_to_lpc.o  \
+	audio/common/processing/resample.o  \
+	audio/common/processing/resample_48khz.o  \
+	audio/common/processing/resample_by_2.o  \
+	audio/common/processing/resample_by_2_internal.o  \
+	audio/common/processing/resample_fractional.o  \
+	audio/common/processing/splitting_filter.o  \
+	audio/common/processing/spl_sqrt.o  \
+	audio/common/processing/spl_sqrt_floor.o  \
+	audio/common/processing/spl_version.o  \
+	audio/common/processing/sqrt_of_one_minus_x_squared.o  \
+	audio/common/processing/vector_scaling_operations.o  \
+	audio/common/processing/webrtc_fft_t_1024_8.o  \
+	audio/common/processing/webrtc_fft_t_rad.o  \
+	audio/common/vad/vad_core.o  \
+	audio/common/vad/vad_filterbank.o  \
+	audio/common/vad/vad_gmm.o  \
+	audio/common/vad/vad_sp.o  \
+	audio/common/vad/webrtc_vad.o  \
+	audio/coding_isac/fix/arith_routines.o  \
+	audio/coding_isac/fix/arith_routines_hist.o  \
+	audio/coding_isac/fix/arith_routines_logist.o  \
+	audio/coding_isac/fix/bandwidth_estimator.o  \
+	audio/coding_isac/fix/decode.o  \
+	audio/coding_isac/fix/decode_bwe.o  \
+	audio/coding_isac/fix/decode_plc.o  \
+	audio/coding_isac/fix/encode.o  \
+	audio/coding_isac/fix/entropy_coding.o  \
+	audio/coding_isac/fix/fft.o  \
+	audio/coding_isac/fix/filterbanks.o  \
+	audio/coding_isac/fix/filterbank_tables.o  \
+	audio/coding_isac/fix/filters.o  \
+	audio/coding_isac/fix/initialize.o  \
+	audio/coding_isac/fix/isacfix.o  \
+	audio/coding_isac/fix/lattice.o  \
+	audio/coding_isac/fix/lattice_c.o  \
+	audio/coding_isac/fix/lpc_masking_model.o  \
+	audio/coding_isac/fix/lpc_tables.o  \
+	audio/coding_isac/fix/pitch_estimator.o  \
+	audio/coding_isac/fix/pitch_filter.o  \
+	audio/coding_isac/fix/pitch_gain_tables.o  \
+	audio/coding_isac/fix/pitch_lag_tables.o  \
+	audio/coding_isac/fix/spectrum_ar_model_tables.o  \
+	audio/coding_isac/fix/transform.o  \
+	audio/coding_isac/main/arith_routines.o  \
+	audio/coding_isac/main/arith_routines_hist.o  \
+	audio/coding_isac/main/arith_routines_logist.o  \
+	audio/coding_isac/main/bandwidth_estimator.o  \
+	audio/coding_isac/main/crc.o  \
+	audio/coding_isac/main/decode.o  \
+	audio/coding_isac/main/decode_bwe.o  \
+	audio/coding_isac/main/encode.o  \
+	audio/coding_isac/main/encode_lpc_swb.o  \
+	audio/coding_isac/main/entropy_coding.o  \
+	audio/coding_isac/main/fft.o  \
+	audio/coding_isac/main/filterbanks.o  \
+	audio/coding_isac/main/filterbank_tables.o  \
+	audio/coding_isac/main/filter_functions.o  \
+	audio/coding_isac/main/intialize.o  \
+	audio/coding_isac/main/isac.o  \
+	audio/coding_isac/main/lattice.o  \
+	audio/coding_isac/main/lpc_analysis.o  \
+	audio/coding_isac/main/lpc_gain_swb_tables.o  \
+	audio/coding_isac/main/lpc_shape_swb12_tables.o  \
+	audio/coding_isac/main/lpc_shape_swb16_tables.o  \
+	audio/coding_isac/main/lpc_tables.o  \
+	audio/coding_isac/main/pitch_estimator.o  \
+	audio/coding_isac/main/pitch_filter.o  \
+	audio/coding_isac/main/pitch_gain_tables.o  \
+	audio/coding_isac/main/pitch_lag_tables.o  \
+	audio/coding_isac/main/spectrum_ar_model_tables.o  \
+	audio/coding_isac/main/transform.o  \
+	audio/coding_ilbc/abs_quant.o \
+	audio/coding_ilbc/abs_quant_loop.o \
+	audio/coding_ilbc/augmented_cb_corr.o \
+	audio/coding_ilbc/bw_expand.o \
+	audio/coding_ilbc/cb_construct.o \
+	audio/coding_ilbc/cb_mem_energy_augmentation.o \
+	audio/coding_ilbc/cb_mem_energy.o \
+	audio/coding_ilbc/cb_mem_energy_calc.o \
+	audio/coding_ilbc/cb_search.o \
+	audio/coding_ilbc/cb_search_core.o \
+	audio/coding_ilbc/cb_update_best_index.o \
+	audio/coding_ilbc/chebyshev.o \
+	audio/coding_ilbc/comp_corr.o \
+	audio/coding_ilbc/constants.o \
+	audio/coding_ilbc/create_augmented_vec.o \
+	audio/coding_ilbc/decode.o \
+	audio/coding_ilbc/decode_residual.o \
+	audio/coding_ilbc/decoder_interpolate_lsf.o \
+	audio/coding_ilbc/do_plc.o \
+	audio/coding_ilbc/encode.o \
+	audio/coding_ilbc/energy_inverse.o \
+	audio/coding_ilbc/enhancer.o \
+	audio/coding_ilbc/enhancer_interface.o \
+	audio/coding_ilbc/enh_upsample.o \
+	audio/coding_ilbc/filtered_cb_vecs.o \
+	audio/coding_ilbc/frame_classify.o \
+	audio/coding_ilbc/gain_dequant.o \
+	audio/coding_ilbc/gain_quant.o \
+	audio/coding_ilbc/get_cd_vec.o \
+	audio/coding_ilbc/get_lsp_poly.o \
+	audio/coding_ilbc/get_sync_seq.o \
+	audio/coding_ilbc/hp_input.o \
+	audio/coding_ilbc/hp_output.o \
+	audio/coding_ilbc/ilbc.o \
+	audio/coding_ilbc/index_conv_dec.o \
+	audio/coding_ilbc/index_conv_enc.o \
+	audio/coding_ilbc/init_decode.o \
+	audio/coding_ilbc/init_encode.o \
+	audio/coding_ilbc/interpolate.o \
+	audio/coding_ilbc/interpolate_samples.o \
+	audio/coding_ilbc/lpc_encode.o \
+	audio/coding_ilbc/lsf_check.o \
+	audio/coding_ilbc/lsf_interpolate_to_poly_dec.o \
+	audio/coding_ilbc/lsf_interpolate_to_poly_enc.o \
+	audio/coding_ilbc/lsf_to_lsp.o \
+	audio/coding_ilbc/lsf_to_poly.o \
+	audio/coding_ilbc/lsp_to_lsf.o \
+	audio/coding_ilbc/my_corr.o \
+	audio/coding_ilbc/nearest_neighbor.o \
+	audio/coding_ilbc/pack_bits.o \
+	audio/coding_ilbc/poly_to_lsf.o \
+	audio/coding_ilbc/poly_to_lsp.o \
+	audio/coding_ilbc/refiner.o \
+	audio/coding_ilbc/simple_interpolate_lsf.o \
+	audio/coding_ilbc/simple_lpc_analysis.o \
+	audio/coding_ilbc/simple_lsf_dequant.o \
+	audio/coding_ilbc/simple_lsf_quant.o \
+	audio/coding_ilbc/smooth.o \
+	audio/coding_ilbc/smooth_out_data.o \
+	audio/coding_ilbc/sort_sq.o \
+	audio/coding_ilbc/split_vq.o \
+	audio/coding_ilbc/state_construct.o \
+	audio/coding_ilbc/state_search.o \
+	audio/coding_ilbc/swap_bytes.o \
+	audio/coding_ilbc/unpack_bits.o \
+	audio/coding_ilbc/vq3.o \
+	audio/coding_ilbc/vq4.o \
+	audio/coding_ilbc/window32_w32.o \
+	audio/coding_ilbc/xcorr_coef.o \
+	audio/processing/audio_buffer.o  \
+	audio/processing/audio_processing_impl.o  \
+	audio/processing/echo_cancellation_impl.o  \
+	audio/processing/echo_control_mobile_impl.o  \
+	audio/processing/gain_control_impl.o  \
+	audio/processing/high_pass_filter_impl.o  \
+	audio/processing/level_estimator_impl.o  \
+	audio/processing/noise_suppression_impl.o  \
+	audio/processing/processing_component.o  \
+	audio/processing/splitting_filter.o  \
+	audio/processing/voice_detection_impl.o  \
+	audio/processing/aec/aec_core.o  \
+	audio/processing/aec/aec_rdft.o  \
+	audio/processing/aec/aec_resampler.o  \
+	audio/processing/aec/echo_cancellation.o  \
+	audio/processing/aecm/aecm_core.o  \
+	audio/processing/aecm/echo_control_mobile.o  \
+	audio/processing/agc/analog_agc.o  \
+	audio/processing/agc/digital_agc.o  \
+	audio/processing/ns/noise_suppression.o  \
+	audio/processing/ns/ns_core.o  \
+	audio/processing/utility/delay_estimator.o  \
+	audio/processing/utility/delay_estimator_wrapper.o  \
+	audio/processing/utility/fft4g.o  \
+	audio/processing/utility/ring_buffer.o  \
+	system_wrappers/cpu_features.o  \
+	system_wrappers/critical_section.o  \
+	system_wrappers/critical_section_posix.o  \
+	system_wrappers/file_impl.o
+
+ifneq (no,no)
+OBJS := $(OBJS) audio/processing/aec/aec_rdft_sse2.o  \
+	audio/processing/aec/aec_core_sse2.o
+CC := $(CC) -msse2
+CFLAGS := $(CFLAGS) -DSSE2_OPS=true
+endif
+
+
+LOCALFLAGS =
+MKDEPS  := ../../config.status
+LOCALLIBS =
+COMPILE = $(CXX) $(DEFS) $(DEBUG) $(INCLUDES) $(CPPFLAGS)
+CCOMPILE = $(CC) $(DEFS) $(INCLUDES) $(CFLAGS)
+LINK = $(CXX) $(LDFLAGS)
+MODCOMP = $(COMPILE) $(LDFLAGS)
+MODCCOMP = $(COMPILE) $(LDFLAGS)
+
+prefix = /usr/local
+exec_prefix = ${prefix}
+
+# include optional local make rules
+-include YateLocal.mak
+
+.PHONY: all debug ddebug xdebug
+all: $(LIBS)
+
+debug:
+	$(MAKE) all DEBUG=-g3 MODSTRIP=
+
+ddebug:
+	$(MAKE) all DEBUG='-g3 -DDEBUG' MODSTRIP=
+
+xdebug:
+	$(MAKE) all DEBUG='-g3 -DXDEBUG' MODSTRIP=
+
+.PHONY: strip
+strip: all
+	strip --strip-debug --discard-locals $(PROGS)
+
+.PHONY: clean
+clean:
+	@-$(RM) $(PROGS) $(LIBS) $(OBJS) $(AEC) core 2>/dev/null
+
+%.o: ./%.c $(MKDEPS) $(INCFILES)
+	$(CCOMPILE) -c -o $@ $<
+
+%.o: ./%.cc $(MKDEPS) $(INCFILES)
+	$(COMPILE) -c -o $@ $<
+
+Makefile: ./Makefile.in ../../config.status
+	cd ../.. && ./config.status
+
+libminiwebrtc.a: $(OBJS)
+	$(AR) rcs $@ $^
+

@@ -1,0 +1,43 @@
+# Makefile
+# This file holds the make rules for Yate script files
+
+# override DESTDIR at install time to prefix the install directory
+DESTDIR :=
+
+SCRIPTS := leavemail.php voicemail.php route.php queue_in.php queue_out.php banbrutes.php \
+	echo.sh
+SCRLIBS := libyate.php libyateivr.php libyatechan.php libvoicemail.php \
+	libeliza.js libchatbot.js eliza.js \
+	libyate.py \
+	Yate.pm
+
+prefix = /usr/local
+exec_prefix = ${prefix}
+datarootdir = ${prefix}/share
+datadir = ${datarootdir}
+shrdir = $(datadir)/yate
+scrdir = $(shrdir)/scripts
+
+# include optional local make rules
+-include YateLocal.mak
+
+.PHONY: all
+all:
+
+.PHONY: install
+install:
+	@cd . && mkdir -p "$(DESTDIR)$(scrdir)/" && \
+	install -m 0644 $(SCRLIBS) "$(DESTDIR)$(scrdir)/" && \
+	test -z "$(SCRIPTS)" || \
+	install $(SCRIPTS) "$(DESTDIR)$(scrdir)/"
+
+.PHONY: uninstall
+uninstall:
+	@-for i in $(SCRIPTS) $(SCRLIBS) ; do \
+	    rm "$(DESTDIR)$(scrdir)/$$i" ; \
+	done;
+	@-rmdir "$(DESTDIR)$(scrdir)"
+	@-rmdir "$(DESTDIR)$(shrdir)"
+
+Makefile: ./Makefile.in ../../config.status
+	cd ../.. && ./config.status

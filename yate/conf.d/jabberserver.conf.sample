@@ -1,0 +1,241 @@
+[general]
+
+; domains: string: Comma separated list of domains serviced by the server
+; This parameter is required
+;domains=
+
+; dialback_secret: string: Dialback key to be used when authenticating with foreign domains
+; A random one will be generated if missing
+;dialback_secret=
+
+; restricted_resources: string: Comma separated list of restricted resource names
+; Users won't be allowed to use these resources or any other resource name starting
+;  with it
+;restricted_resources=
+
+; s2s_tlsrequired: boolean: Stream encryption is required on all server to server streams
+; Defaults to no
+;s2s_tlsrequired=
+
+; s2s_offerfeatures: boolean: Offer RFC 3920 version 1 and features on incoming
+;  server to server streams requesting it
+; This option is ignored on streams not advertising version 1 in stream start
+; If set to 'no' this parameter will override any other stream encryption option
+; Defaults to yes
+;s2s_offerfeatures=
+
+; c2s_tlsrequired: boolean: Stream encryption is required on all client to server streams
+; Defaults to no
+;c2s_tlsrequired=
+
+; c2s_allowunsecureplainauth: boolean: Allow user plain password authentication on
+;  unsecured stream
+; Defaults to no
+;c2s_allowunsecureplainauth=
+
+; c2s_plainauthonly: boolean: Offer only plain password authentication when available
+; This parameter is used only when plain password authentication is available
+;  (c2s_allowunsecureplainauth is enabled or the stream is secured)
+; Defaults to no
+;c2s_plainauthonly=no
+
+; c2s_oldstyleauth: boolean: Enable old style (XEP 0078) user authentication
+; Defaults to yes
+;c2s_oldstyleauth=
+
+; stream_readbuffer: integer: The length of the stream read buffer
+; Defaults to 8192 if missing or invalid. Minimum allowed value is 1024
+;stream_readbuffer=8192
+
+; stream_parsermaxbuffer: integer: The maximum length of an incomplete xml allowed
+;  in a stream parser's buffer
+; Defaults to 8192 if missing or invalid. Minimum allowed value is 1024
+;stream_parsermaxbuffer=8192
+
+; stream_restartcount: integer: The maximum value for stream restart counter
+; Defaults to 2 if missing or invalid
+; Minimum allowed value is 1, maximum allowed value is 10
+;stream_restartcount=2
+
+; stream_restartupdateinterval: integer: The interval, in milliseconds, to increase a
+;  stream's current restart counter (not exceeding the stream_restartcount value)
+; Defaults to 15000 if missing or invalid
+; Minimum allowed value is 5000, maximum allowed value is 300000
+;stream_restartupdateinterval=15000
+
+; stream_starttimeout: integer: The interval, in milliseconds, allowed for a remote
+;  party to send the stream start tag
+; Defaults to 20000 if missing or invalid
+; Minimum allowed value is 10000, maximum allowed value is 60000
+;stream_starttimeout=20000
+
+; stream_setuptimeout: integer: Overall stream setup interval in milliseconds. The timer
+;  will stop when the stream is authenticated
+; Defaults to 120000 if missing or invalid
+; Minimum allowed value is 60000, maximum allowed value is 600000
+;stream_setuptimeout=120000
+
+; stream_connecttimeout: integer: The interval, in milliseconds, allowed for an
+;  outgoing stream to make a TCP connection to a remote host
+; Defaults to 60000 if missing or invalid
+; Minimum allowed value is 1000, maximum allowed value is 120000
+;stream_connecttimeout=60000
+
+; stream_srvtimeout: integer: The timeout interval, in milliseconds, for SRV query
+; Defaults to 30000 if missing or invalid
+; Minimum allowed value is 10000, maximum allowed value is 120000
+;stream_srvtimeout=30000
+
+; stream_idletimeout: integer: The interval, in milliseconds, allowed for a
+;  server to server stream to be idle
+; Defaults to 3600000 (1h) if missing or invalid
+; Minimum allowed value is 600000 (10min), maximum allowed value is 21600000 (6h)
+;stream_idletimeout=3600000
+
+; stream_redirectcount: integer: The number of successive stream redirect to handle for
+;  outgoing streams
+; This parameter configures how the 'see-other-host' stream error is handled. If set to 0
+;  or current redirect counter has reached the maximum allowed value the stream will be
+;  terminated. The stream will be redirected to new host/ip otherwise
+; NOTE: When a stream is authenticated its redirect counter is reset to 0
+; This parameter is applied on reload for new streams only
+; Defaults to 0 if missing or invalid
+; Minimum allowed value is 0, maximum allowed value is 10
+; A value outside min/max interval will be adjusted to nearest interval margin
+;stream_redirectcount=0
+
+; entitycaps: boolean: Enable entity capabilities cache.
+; If enabled entity capabilities will be requested and cached each time a presence
+;  stanza is received
+; Defaults to enable
+;entitycaps=enable
+
+; entitycaps_file: string: Entity capabilities cache file
+; This parameter is applied on reload
+; If the file changes on reload entity capabilities will be saved in the new
+;  location, the old file will not be deleted
+; Defaults to 'jabberentitycaps.xml' located in current configuration directory
+;entitycaps_file=
+
+; workers: integer: The number of worker threads processing stanzas received by streams
+; Minimum allowed value is 1, maximum allowed value is 10
+; Defaults to 1
+;workers=1
+
+; worker_priority: string: Worker threads priority
+; Allowed values: lowest, low, normal, high, highest
+; Defaults to normal
+;worker_priority=normal
+
+; dump_iq: boolean: Dump the iq stanza in a 'data' parameter of dispatched jabber.iq messages
+; Defaults to no
+;dump_iq=no
+
+; message_route_external: boolean: Route (send call.route) for incoming chat to
+;  external domains (components or server items) serviced by us
+; NOTE: A module may register a server item having a domain from our configured domains.
+;  In this case the domain will become external and message stanzas addressed to it
+;  won't be routed unless message_route_external is enabled
+; If enabled and call.route fails the message stanza will be dropped or rejected
+; Defaults to no
+;message_route_external=no
+
+; message_route_foreign: boolean: Route (send call.route) for incoming chat to
+;  foreign domains (any domain not serviced by us)
+; If enabled and call.route fails the message stanza will be dropped or rejected
+; Defaults to no
+;message_route_foreign=no
+
+; compression_formats: string: Comma separated list of supported compression formats
+; This parameter configures the formats to be offered on incoming streams
+; This parameter is not applied on reload
+; Set it to empty string to disable stream compression on incoming streams
+; Defaults to zlib if missing
+;compression_formats=zlib
+
+; authcluster: boolean: True to authenticate incoming cluster stream requests
+; If enabled, an user.auth message will be enqueued to request authentication
+; If disabled, cluster streams will be automatically accepted
+; Defaults to disable
+;authcluster=disable
+
+; printxml: boolean/string: Print sent/received XML data to output if debug
+;  level is at least 9
+; Allowed values are boolean values or 'verbose' string
+; If verbose is specified, XML elements' children, attributes or text will be
+;  shown on separate lines
+; Defaults to no
+;printxml=no
+
+
+;[listener name]
+; This section configures a connection listener
+; This section may repeat to configure more listeners
+; Section name must start with 'listener' keyword folowed by a space (not TAB) character
+;  E.g. for a listener named 'serverconn' the section name must be 'listener serverconn'
+
+; enable: boolean: Enable or disable this listener
+; Defaults to false if missing or invalid
+;enable=
+
+; type: string: The type of the expected incoming connection
+; This parameter is required
+; Allowed values:
+;  c2s Client to server connection
+;  s2s Server to server connection
+;  comp External component connection
+;type=
+
+; address: string: IP address to listen
+; Listen on all available interfaces if empty or invalid
+;address=
+
+; port: integer: The port to listen
+; These are the default values for some known types (only if this parameter is missing)
+;  c2s 5222
+;  s2s 5269
+; There is no default value for external component listeners or c2s SSL listeners
+;port=
+
+; backlog: integer: Maximum length of the queue of pending connections
+; Set it to 0 for system maximum
+; Defaults to 5 if missing or invalid
+;backlog=5
+
+; sslcontext: string: The SSL context of a c2s listener using encryption
+; The context will be used to encrypt the socket before starting a new stream
+; This parameter is ignored if type is not c2s
+;sslcontext=
+
+
+;[comp name]
+; This section create an outgoing component stream
+; This section may repeat to build more components
+; Section name must start with 'comp' keyword folowed by a space (not TAB) character
+;  E.g. for a stream named 'mycomp' the section name must be 'comp mycomp'
+; Except for 'enable' no other parameters are applied on reload,
+
+; enable: boolean: Enable or disable this component
+; Defaults to false if missing or invalid
+;enable=
+
+; domain: string: Server domain
+; This parameter is required
+;domain=
+
+; component: string: Component domain/name
+; If component name ends with dot ('.') it will be completed with server domain
+; E.g. server=example.com, component=yate. component will be yate.example.com
+; This parameter is required
+;component=
+
+; password: string: Component password used to authenticate at server
+;password=
+
+; address: string: IP address to connect to
+; Connect to server domain if missing
+;address=
+
+; port: integer: The port to connect to
+; This parameter is required
+;port=

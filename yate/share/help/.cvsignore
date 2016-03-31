@@ -1,0 +1,7 @@
+Makefile
+YateLocal*
+.xvpics
+core*
+*.orig
+*~
+.*.swp

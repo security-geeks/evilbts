@@ -1,0 +1,10 @@
+Makefile
+YateLocal*
+core*
+yate-*
+*.o
+*.a
+*.orig
+*~
+.*.swp
+classes.png

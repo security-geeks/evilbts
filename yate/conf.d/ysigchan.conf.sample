@@ -1,0 +1,940 @@
+; This file keep signalling channel configuration
+; Each section (except for 'general' section) configure a call controller (trunk)
+;  or a signalling component
+; For call controllers (trunks), the name of the section will be used to route
+;  outgoing calls
+
+
+; IMPORTANT:
+;  The configuration has changed between Yate 2 and 3, you must check the
+;  configuration against the relevant sample if upgrading.
+
+
+[general]
+; This section keep general or default settings for the signalling module:
+
+; debuglevel: int: Debug level for the plugin
+; This parameter is applied on reload
+;debuglevel=
+
+; debuglevel_engine: int: Debug level for the signalling engine
+; This parameter is applied on reload
+;debuglevel_engine=
+
+; dtmfinband: boolean: Enable to try to send the DTMF data in band when an audio
+;  channel is available. If disabled or no audio channel available, the DTMF will
+;  be sent through the signalling channel if any
+;dtmfinband=no
+
+; floodevents: int: How many events retrieved in a row trigger a flood warning
+; Can be overridden in each ss7-isup, isdn-pri-... or isdn-bri-... section
+;floodevents=20
+
+; maxlock: int: How many microseconds to try to take a non-critical lock before giving up
+; Valid values 500 or higher, -1 to wait forever
+; This parameter is applied on reload
+;maxlock=10000 normally, -1 if Yate is started with -Dm
+
+; datafile: string: File to save/restore trunks data (circuits lock status)
+; Defaults to ysigdata.conf located in current config directory
+; If set the file must contain the path (relative or absolute)
+; This parameter is applied on reload
+;datafile=
+
+
+; Each section except [general] can have some common parameters
+
+; To disable the component without deleting the entire section.
+; The default is to enable the component
+; enable: bool: Allow creation of the component corresponding to the section
+;enable=yes
+
+; Debug name as reported in Yate logs, default is derived from component name
+; This parameter is used only when a component is created
+; debugname: string: Debug name of the created component
+;debugname=
+
+; Debug level to apply on creation or reload
+; debuglevel: int: Debug level of the component
+;debuglevel=
+
+
+; Example of an ISDN trunk
+;[trunk1]
+
+; type: keyword: Specify the trunk type
+; Allowed values:
+;  isdn-bri-net:  ISDN network side of a data link over basic rate HDLC interface(s)
+;  isdn-bri-cpe:  ISDN CPE (user) side of a data link over basic rate HDLC interface(s)
+;  isdn-pri-net:  ISDN network side of a data link over one or more primary HDLC interface(s)
+;  isdn-pri-cpe:  ISDN CPE (user) side of a data link over one or more primary HDLC interface(s)
+; NOTE: isdn-pri-net and isdn-pri-cpe are identical, except for the side of the link
+;type=
+
+; switchtype: string: The switch type of this group
+; This parameter defines a set of flags modifying the call controller's behaviour
+; Allowed values: euro-isdn-e1, euro-isdn-t1, national-isdn, dms100, lucent5e, att4ess, qsig, unknown
+;switchtype=unknown
+
+; sig: string: Specify the span(s) containing the signalling channel (D)
+; For example wanpipe1 or any other section specified in any of the telephony
+;   modules like wpcard or zapcard
+;sig=
+
+; voice: string: Specify the span(s) containing the voice channels (B)
+; Multiple cards may be specified by simply separating them with a comma (',')
+;  character
+; Defaults to the value of "sig" and then to trunk name if missing
+; It is mandatory to have voice circuits configured
+; NOTE: The default has changed from Yate 2 because of architecture differences
+;voice=
+
+; offset: int: Offset of voice circuit codes relative to low level circuit number
+;offset=0
+
+; range: string: Arbitrary ranges of circuits for outbound calls (can be repeated)
+; Possible formats:
+;  range=name:list of circuits (like 1,3,5-9)
+;  range=name:strategy:list of circuits (like 1,3,5-9)
+
+; number: string: Prefix of numbers we accept call setups for, empty to accept all
+; Only used by isdn-pri-cpe, makes sense when NET side is Point-to-Multipoint
+; Setups are ignored if called number is present but doesn't start with this prefix
+;number=
+
+; rxunderrun: int: Maximum interval in ms between two packets before we report
+;  an underrun condition, zero to disable or 2500+
+;rxunderrun=0
+
+; strategy: string: The strategy used to allocate voice channels for outgoing calls
+; Allowed values:
+;  - increment  Incremental search an idle channel starting with the last allocated channel
+;  - decrement  Decremental search an idle channel starting with the last allocated channel
+;  - lowest     Incremental search an idle channel starting with the first channel in group
+;  - highest    Decremental search an idle channel starting with the last channel in group
+;  - random     Randomly choose an idle channel
+; Defaults to increment
+;strategy=increment
+
+; strategy-restrict: string: Define channel allocation restrictions and behaviour
+; This option is ignored when strategy is random
+; Allowed values:
+;    even           Allocate only even channels
+;    odd            Allocate only odd channels
+;    even-fallback  Allocate even channels, fall back to odd channels
+;    odd-fallback   Allocate odd channels, fall back to even channels
+;strategy-restrict=
+
+; channelsync: integer: The interval (in seconds) at which the call controller
+;  will try to re-sync idle channels
+; The call controller will notify the other side of the link of idle channels
+; Set to 0 to disable
+; Invalid values default to minimum (60s)
+;channelsync=300
+
+; channellock: integer: Maximum time (in ms) spent trying to lock a remote channel
+; Invalid values default to minimum (2500ms)
+;channellock=10000
+
+; numplan: string: Default numbering plan for outgoing calls
+; Values: unknown, isdn, data, telex, national, private
+; Defaults to unknown if missing or incorrect
+;numplan=unknown
+
+; numtype: string:  Default number type for outgoing calls
+; Values: unknown,international,national,net-specific,subscriber,abbreviated,reserved
+; Defaults to unknown if missing or incorrect
+;numtype=unknown
+
+; presentation: string: Default number presentation for outgoing calls
+; Values: allowed, restricted, unavailable
+; Defaults to allowed if missing or incorrect
+;presentation=allowed
+
+; screening: string:  Default number screening for outgoing calls
+; Values: user-provided, user-provided-passed, user-provided-failed, network-provided
+; Defaults to user-provided if missing or incorrect
+;screening=user-provided
+
+; format: string:  Default data format for outgoing calls. Values: alaw, mulaw, g721
+; Defaults to alaw if missing or incorrect
+; alaw is used commonly in Europe while mulaw is used commonly in US and Japan.
+;format=alaw
+
+; ringback: boolean: Offer a ringback tone even if not provided by peer channel
+; If it fails the correct indication (no inband available) is signaled
+;ringback=no
+
+; floodevents: int: How many events retrieved in a row trigger a flood warning
+; Default value is taken from the [general] section
+;floodevents=20
+
+; print-messages: boolean: Print decoded protocol data units to output
+; This option is applied on reload
+; Defaults to no
+;print-messages=no
+
+; print-frames: boolean: Print decoded Layer 2 (Q.921) frames to output
+; This option is applied on reload
+; Defaults to no
+;print-frames=no
+
+; extended-debug: boolean: Print extended debug data (such as raw hex data) to output
+; This option is applied on reload
+; Defaults to no
+;extended-debug=no
+
+; layer2dump: string: Filename to dump Q.921 packets to
+;layer2dump=
+
+; layer3dump: string: Filename to dump Q.931 packets to
+;layer3dump=
+
+
+; Example of an ISDN passive recorder
+;[recorder1]
+
+; type: keyword: Specify the trunk type
+; Allowed values:
+;  isdn-pri-mon:  ISDN monitor of one or more primary HDLC interface(s)
+;type=isdn-pri-mon
+
+; sig-net: string: Specify the span(s) containing the signalling channel(s) for the network side of the monitored link
+; For example wanpipe1 or any other section specified in any of the telephony
+;   modules like wpcard or zapcard
+;sig-net=
+
+; sig-cpe: string: Specify the span(s) containing the signalling channel(s) for the user side of the monitored link
+; For example wanpipe1 or any other section specified in any of the telephony
+;   modules like wpcard or zapcard
+;sig-cpe=
+
+; voice-net: string: Specify the span(s) containing the voice channel(s) for the network side of the monitored link
+; Multiple cards may be specified by simply separating them with a comma (',') character
+; Defaults to the span specified in the sig-net parameter
+;voice-net=
+
+; voice-cpe: string: Specify the span(s) containing the voice channel(s) for the user side of the monitored link
+; Multiple cards may be specified by simply separating them with a comma (',') character
+; Defaults to the span specified in the sig-cpe parameter
+;voice-cpe=
+
+; detect: boolean: Change the side of the link on each captured request for watched signalling span(s)
+; If disabled and the side of the link is not correct, the monitor will not be notified on
+;   data link state change. This may lead to malfunction
+;detect=yes
+
+; idletimeout: integer: HDLC data link idle timeout, should be 3 * T203
+; The minimum allowed value is 4000ms. Defaults to 30000 if missing or invalid
+;idletimeout=30000
+
+; muxchanbuffer: integer: The buffer size for one channel of the audio multiplexer
+; Defaults to 160 if 0 or missing
+;muxchanbuffer=160
+
+; idlevalue: integer: The value used by the audio multiplexer to fill missing data
+; This value is used to fill the free space when the multiplexer has to forward the received
+;   data but one channel buffer is not full
+; Interval: 0..255. Defaults to 255 if missing or invalid
+; Ignored if type is not isdn-pri-mon
+;idlevalue=255
+
+; floodevents: int: How many events retrieved in a row trigger a flood warning
+; Default value is taken from the [general] section
+;floodevents=20
+
+; layer2dump-net: string: Filename to dump NET Q.921 packets to
+;layer2dump-net=
+
+; layer2dump-cpe: string: Filename to dump CPE Q.921 packets to
+;layer2dump-cpe=
+
+
+; Example of a SS7 ISUP trunk
+;[isup1]
+; type: keyword: Specify the trunk type
+; Allowed values:
+;  ss7-isup:      SS7 ISDN User Part
+;type=ss7-isup
+
+; pointcodetype: string: SS7 point code type (required)
+; Allowed values:
+;  ITU    ITU-T Q.704
+;  ANSI   ANSI T1.111.4
+;  ANSI8  8-bit SLS
+;  China  GF 001-9001
+;  Japan  T-Q704, NTT-Q704
+;  Japan5 5-bit SLS
+;pointcodetype=
+
+; pointcode: string: Local point code to accept as destination
+; If no point codes are added no calls can be made (incoming or outgoing)
+;  through this trunk
+; The format is network-cluster-member or number
+;pointcode=
+
+; defaultpointcode: string: Default originating point code used for outgoing calls
+; It also acts as accepted point code (see pointcode)
+; Only one point code can be default
+; The format is network-cluster-member or number
+;defaultpointcode=
+
+; remotepointcode: string: Default destination point code used for outgoing
+;  calls and maintenance messages
+; If missing or invalid, no maintenance message will be sent
+; The format is network-cluster-member or number
+;remotepointcode=
+
+; service: int: Service Information Field (protocol number)
+; It is unlikely you will ever need to modify it
+;service=5
+
+; priority: keyword: Value of the Priority bits in the Service Information Octet
+; Allowed values: regular, special, circuit, facility
+;priority=regular
+
+; netindicator: keyword: Value of Network Indicator bits in the SIO
+; Allowed values: international, spareinternational, national, reservednational
+;netindicator=national
+
+; router: string: Name of the SS7 Router to attach to
+; A boolean false value disables attaching a router (unlikely)
+;router=ss7router
+
+; network: string: Name of linkset to attach to if router is disabled
+; This allows direct connection without MTP management (unlikely)
+;network=
+
+; userparttest: integer: Remote user part test interval in seconds
+; Set to 0 to always assume the remote user part is available
+; Invalid values default to minimum (10s)
+;userparttest=60
+
+; parttestmsg: keyword: ISUP message to use for user part test
+; For ANSI the CVT message may be used instead on UPT
+; Other possibilities are RSC and UBL but are not recommended
+;parttestmsg=UPT
+
+; lockgroup: boolean: Allow sending circuit group block/unblock requests
+; Normally the remote side must support circuit group operations
+;lockgroup=yes
+
+; earlyacm: boolean: Convert received early ACM user state into progress or ringing
+;earlyacm=yes
+
+; voice: string: Specify the span(s) containing the voice channels (L1)
+; Multiple cards may be specified by simply separating them with a comma (',')
+;  character
+; It is mandatory to have voice circuits configured
+; Defaults to the trunk name if missing
+;voice=
+
+; offset: int: Offset of voice circuit codes relative to low level circuit number
+;offset=0
+
+; range: string: Arbitrary ranges of circuits for outbound calls (can be repeated)
+; Possible formats:
+;  range=name:list of circuits (like 1,3,5-9)
+;  range=name:strategy:list of circuits (like 1,3,5-9)
+
+; strategy: string: The strategy used to allocate voice channels for outgoing calls
+; Allowed values:
+;  - increment  Incremental search an idle channel starting with the last allocated channel
+;  - decrement  Decremental search an idle channel starting with the last allocated channel
+;  - lowest     Incremental search an idle channel starting with the first channel in group
+;  - highest    Decremental search an idle channel starting with the last channel in group
+;  - random     Randomly choose an idle channel
+; Defaults to increment
+;strategy=increment
+
+; strategy-restrict: string: Define channel allocation restrictions and behaviour
+; This option is ignored when strategy is random
+; Allowed values:
+;    even           Allocate only even channels
+;    odd            Allocate only odd channels
+;    even-fallback  Allocate even channels, fall back to odd channels
+;    odd-fallback   Allocate odd channels, fall back to even channels
+;strategy-restrict=
+
+; channelsync: integer: The interval (in seconds) at which the call controller
+;  will try to re-sync idle channels
+; The call controller will notify the other side of the link of idle channels
+; Set to 0 to disable
+; Defaults to minimum value (60s) if missing or invalid
+;channelsync=300
+
+; sls: integer or keyword: Default Signaling Link Selection in outbound calls
+; Allowed values:
+;    auto    Let SS7 Layer3 add a proper value
+;    last    Last SLS used (default for non-ITU)
+;    cic     Use the circuit number as SLS (ITU style)
+;    0..255  Explicit numeric value, gets truncated to the SLS bit range
+; NOTE: The default has changed from Yate 2
+;sls=last (cic if pointcodetype is ITU)
+
+; numplan: string: Default numbering plan for outgoing calls
+; Values: unknown, isdn, data, telex, national, private
+; Defaults to unknown if missing or incorrect
+;numplan=unknown
+
+; numtype: string:  Default number type for outgoing calls
+; Values: unknown,international,national,net-specific,subscriber,abbreviated,reserved
+; Defaults to unknown if missing or incorrect
+;numtype=unknown
+
+; presentation: string: Default number presentation for outgoing calls
+; Values: allowed, restricted, unavailable
+; Defaults to allowed if missing or incorrect
+;presentation=allowed
+
+; screening: string:  Default number screening for outgoing calls
+; Values: user-provided, user-provided-passed, user-provided-failed, network-provided
+; Defaults to user-provided if missing or incorrect
+;screening=user-provided
+
+; inn: boolean: Routing to Internal Network Number allowed
+; Defaults to no
+;inn=no
+
+; format: string: Default data format for outgoing calls. Values: alaw, mulaw, g721
+; Defaults to mulaw for ANSI and Japan point codes, alaw for all others
+; alaw is used commonly in Europe while mulaw is used commonly in US and Japan.
+;format=
+
+; continuity: string: Type of continuity check to perform on the circuits
+; If not set calls that request continuity check will be rejected
+;continuity=
+
+; ringback: boolean: Offer a ringback tone even if not provided by peer channel
+; If it fails the correct indication (no inband available) is signaled
+;ringback=no
+
+; location: string: Exchange location to be set when sending Q.850 causes
+; Available values are:
+;   U    User
+;   LPN  Private network serving the local user
+;   LN   Public network serving the local user
+;   TN   Transit network
+;   RLN  Public network serving the remote user
+;   RPN  Private network serving the remote user
+;   INTL International network
+;   BI   Network beyond the interworking point
+; A default 'BI' will be used if not set or invalid
+;location=
+
+; confirm_ccr: boolean: Send a Loopback Ack (national use) in response to Continuity Check Request message
+; Defaults to yes
+;confirm_ccr=yes
+
+; drop_unknown: boolean: Drop call or attempt to change circuit if an unknown
+;  or unsupported message is received in an early state
+;drop_unknown=yes
+
+; max_replaces: int: Maximum number of circuit replaces if the other side blocks on call
+; Valid range 0-31
+;max_replaces=3
+
+; needmedia: keyword: When is media absolutely required to continue the call
+; In case of circuit failure the call may continue and retry circuit setup later
+; Allowed values:
+;    no        Media not required, always continue the call (default)
+;    ringing   Media required after call is ringing
+;    answered  Media required after call is answered
+;    yes       Media required from the beginning
+;needmedia=no
+
+; maxcalleddigits: int: Maximum number of digits sent in Called Party Number in IAM
+; Any digits exceeding this limit will be sent separately in a SAM
+;maxcalleddigits=16
+
+; ignore-unknown-digits: boolean: Ignore signal digits that are not ITU standard (A, D and E)
+; The standard set includes only 0-9, B, C and the stop pulsing "."
+; ISUP does not support sending the * and # signals
+;ignore-unknown-digits=yes
+
+; ignore-grs-single: boolean: Ignore (drop) circuit group reset messages with
+;  range 0 (1 circuit affected)
+; Defaults to no
+;ignore-grs-single=no
+
+; ignore-cgb-single: boolean: Ignore (drop) circuit group blocking requests with
+;  range 0 (1 circuit in map)
+; Defaults to no
+;ignore-cgb-single=no
+
+; ignore-cgu-single: boolean: Ignore (drop) circuit group unblocking requests with
+;  range 0 (1 circuit in map)
+; Defaults to no
+;ignore-cgu-single=no
+
+; duplicate-cgb: boolean: Duplicate all sent circuit group blocking requests
+; Defaults to yes if pointcodetype is ANSI or ANSI8, no for other types
+;duplicate-cgb=
+
+; t7: int: Q.764 T7 - Addressing Message Timer, milliseconds
+; Valid range: 20000-30000
+;t7=
+
+; t9: int: Q.764 T9 (Q.118) - Answer / Connect Timer, milliseconds
+; Valid range: 90000-180000, 0 to disable timer
+;t9=0
+
+; t27: int: Q.764 T27 - Continuity Check Reset Timer, milliseconds
+; Valid range: 30000-300000
+;t27=240000
+
+; t34: int: Q.764 T34 - Segmentation Receive Timer, milliseconds
+; Valid range: 2000-4000
+;t34=3000
+
+; floodevents: int: How many events retrieved in a row trigger a flood warning
+; Default value is taken from the [general] section
+;floodevents=20
+
+; charge-process: keyword: Indicate the way that charge message should be processed
+; Allowed values:
+;    confusion   Send confusion back when charge message is received
+;    ignore      Ignore the charge message
+;    raw         Decode the charge message in raw format
+;    parsed      Try to decode message parameters as all optional
+; Default value is to confusion
+;charge-process=confusion
+
+; print-messages: boolean: Print decoded protocol data units to output
+; This option is applied on reload
+; Defaults to no
+;print-messages=no
+
+; extended-debug: boolean: Print extended debug data (such as raw hex data) to output
+; This option is applied on reload
+; Defaults to no
+;extended-debug=no
+
+
+; Example of a SS7 MTP3 network (linkset)
+;[linkset1]
+; type: keyword: Specify the linkset type
+; Allowed values:
+;  ss7-mtp3:      SS7 Message Transfer Part - Layer 3
+;type=ss7-mtp3
+
+; netind2pctype: string: Comma separated list of point code types used to map an
+;  incoming network indicator to a specific point code type
+; This option is required and is used to configure a SS7 MTP3 network
+; The list must contain either a singe type or 4 values indicating the point
+;  code type for International, SpareInternational, National and ReservedNational
+;  network indicators
+; If only a single type is specified it will be used to configure all types of
+;  network indicators
+; See the ISUP pointcodetype option for allowed values
+; NOTE: An incoming packet with an unconfigured network indicator will be dropped
+; Examples:
+;  netind2pctype=ITU
+;  netind2pctype=ITU,ANSI,ITU,ITU
+;  netind2pctype=ANSI8,ITU,ANSI,ITU
+;netind2pctype=
+
+; netindicator: keyword: Default value of Network Indicator bits
+; Allowed values: international, spareinternational, national, reservednational
+;netindicator=national
+
+; route: string: Build a destination route for the SS7 network
+; The format of this option is pointcodetype,label,priority,shift,size
+; This parameter can be repeated to build multiple destination routes
+; The network will notify the router about its destination(s) and priority
+;
+; If not specified the priority is 100. A zero priority creates an adjacent route
+;
+; Shift SLS right shift when selecting linkset.
+;  For example for 2 links shift = 1.
+;  A value of 8 or higher disables load balancing.
+;
+; Size represents the maximum MSU size that can be transported on this route.
+; The default vaue is 272 -> maximum MSU size on TDM.
+; If the route can transport more data, a value up to 4000 should be set to
+;  avoid SCCP message fragmentation.
+;
+; Example: route=ITU,2-2-2,100,1,272
+;route=
+
+; adjacent: string: Build an adjacent route for the SS7 network (A, E and F links)
+; The format of this option is pointcodetype,label,size
+; This parameter can be repeated to declare multiple adjacent routers
+; The network will notify the router about its destination(s) and priority
+;
+; The priority is always zero so an adjacent route will always match first.
+;
+; Size represents the maximum MSU size that can be transported on this route.
+; The default vaue is 272 -> maximum MSU size on TDM.
+; If the route can transport more data, a value up to 4000 should be set to
+;  avoid SCCP message fragmentation
+;
+; Example: adjacent=ANSI,40-50-60,272
+;adjacent=
+
+; local: string: Declare a local pointcode for the SS7 network
+; The format of this option is pointcodetype,label
+; This parameter can be repeated to declare a local point codes per type
+; To be standards compliant at least one local pointcode must be declared
+; Example: local=ITU,2-2-4
+;local=
+
+; allowed: string: List of point codes explicitely allowed from this SS7 network
+; An empty or missing list will allow access to all known routes
+; Example: allowed=ITU,2-2-2,2-2-3,1001,2001,2002
+;allowed=
+
+; router: string: Name of the SS7 Router to attach to
+; A boolean false value disables attaching a router (unlikely)
+; If no router is attached only a single User Part can be connected
+;router=ss7router
+
+; link: string: Name of a SS7 Layer 2 link to create in the linkset
+; This parameter can be repeated to add more links to the linkset
+; An explicit SLS can be provided after a comma
+; Example: link=mtp2_to_hq,3
+;link=
+
+; slcshift: bool: Shift right once SLS to obtain desired SLC
+; This may be desirable for ISUP traffic when controlling only odd or even CICs
+;slcshift=false
+
+; autostart: bool: Automatically enable the linkset at startup
+; This should be enabled (default) for normal operation
+;autostart=yes
+
+; checklinks: boolean: Check that the links answer to maintenance messages
+;  (SLTM/SLTA) before placing them into service (normal behavior)
+;checklinks=true
+
+; forcealign: boolean: Realign links that are no longer responding to SLTM
+;forcealign=true
+
+; checkfails: integer: Interval in msec for resending SLTM messages (Q.707 T1)
+; A value of zero disables link fail else the value is clamped between 4s - 12s
+;checkfails=5000
+
+; maintenance: integer: Interval in msec for sending SLTM messages (Q.707 T2)
+; A value of zero disables periodic SLTM else it is clamped to range 30s - 5m
+;maintenance=60000
+
+; layer3dump: string: Filename to dump MTP3 packets to
+;layer3dump=
+
+
+; Example of a SS7 MTP2 link
+;[link1]
+; type: keyword: Specify the link type
+; Allowed values:
+;  ss7-mtp2:      SS7 Message Transfer Part - Layer 2
+;type=ss7-mtp2
+
+; autostart: bool: Automatically try to align the MTP2 at startup or on failure
+; This should be enabled (default) for normal operation
+;autostart=yes
+
+; emergency: boolean: Emergency align SS7 MTP2 layer at startup
+;emergency=yes
+
+; autoemergency: boolean: Emergency align link if owner linkset is down
+;autoemergency=yes
+
+; filllink: boolean: Configure MTP2 to request link fill (packet repeat) when
+;  sending FISU or LSSU packets
+;filllink=yes
+
+; maxerrors: int: Number of consecutive errors that cause realignment
+; This parameter is constrained between 8 and 256
+; When in proving interval this setting is ignored and realignment occurs at
+;  4 errors in normal proving or 1 error in emergency proving
+;maxerrors=64
+
+; rxunderrun: int: Maximum interval in ms between two packets before we report
+;  an underrun condition, zero to disable or 25+
+;rxunderrun=0
+
+; layer2dump: string: Filename to dump MTP2 packets to
+;layer2dump=
+
+
+; Example of a SS7 router (combines discrimination and SN or STP functions)
+; A router named 'ss7router' is implicitely declared with default parameters
+;[ss7router]
+; type: keyword: identifies the component as a SS7 Router
+;type=ss7-router
+
+; transfer: boolean: Enable the Transfer function (STP mode)
+; Enabling STP allows routing messages between adjacent networks
+; By default only the SN and discrimination functions are enabled
+; The special "silent" value performs message transfer without advertising
+;transfer=no
+
+; local: string: Declare a default local pointcode for the attached SS7 networks
+; The format of this option is pointcodetype,label
+; This parameter can be repeated to declare a local point codes per type
+; Example: local=ITU,2-2-4
+;local=
+
+; management: string: Name of the SS7 Management component to create
+; A boolean false value will disable SS7 Management (unlikely)
+;management=ss7snm
+
+; starttime: integer: MTP restart timer (T20) in milliseconds
+; It is enforced to be at least 5000 (5s)
+; Defaults to 60000 (Q.704 standard value) in STP mode or 10000 in SN mode
+;starttime=
+
+; isolation: integer: MTP isolation timer (T1) in milliseconds
+; The minimum value is 500 (0.5s), default 1000 (1s)
+; A value of zero disables isolation checks entirely
+;isolation=1000
+
+; autostart: boolean: Perform MTP restart sequence at initialization
+; According to the standard the restart is performed on first link activation
+;autostart=no
+
+; autoallow: boolean: Turn adjacent routes Allowed on first received regular MSU
+; Should be used only to interoperate with broken implementations
+;autoallow=no
+
+; sendupu: boolean: Send User Part Unavailable (UPU) SNM messages
+;sendupu=yes
+
+; sendtfp: boolean: Send Transfer Prohibited (TFP) SNM messages
+; This setting applies only to transfer function (STP operation mode)
+;sendtfp=yes
+
+; testroutes: integer: Signaling Route Test timer (T10) in milliseconds
+; The minimum value is 10000 (10s), Q.704 recommends 30s to 60s
+; A value of zero disables periodical route tests
+; testroutes=50000
+
+; testrestricted: boolean: Test restricted routes too (national option)
+;testrestricted=no
+
+
+; Example of a SS7 Management Part
+; This component is created by the SS7 router, see its "management" setting
+; A management named 'ss7snm' is implicitely declared with default parameters
+;[ss7snm]
+; type: keyword: identifies the component as a SS7 Management Part
+;type=ss7-snm
+
+; local: string: Declare a default local pointcode for messages to send
+; The format of this option is pointcodetype,label
+; This parameter can be repeated to declare a local point codes per type
+; If missing the local address of the attached router is used
+; Example: local=ITU,2-2-4
+;local=
+
+; priority: keyword: Value of the Priority bits in the Service Information Octet
+; Allowed values: regular, special, circuit, facility
+;priority=regular
+
+; netindicator: keyword: Default value of Network Indicator bits in the SIO
+; Allowed values: international, spareinternational, national, reservednational
+;netindicator=national
+
+; changemsgs: boolean: Emit and process changeover and changeback messages
+; Disabling these messages forces always using time controlled diversion
+;changemsgs=yes
+
+; changesets: boolean: Emit changeover and changeback between linksets
+; Requires "changemsgs" to be enabled to allow sequence controlled diversion
+;  procedures to be used on another linkset if the controlled one is unavaliable
+;changesets=no
+
+; neighbours: boolean: Only accept management messages from adjacent nodes
+;neighbours=yes
+
+
+; Example of a SS7 SCCP
+;[sccp]
+
+; type: keyword: identifies the component as a SS7 SCCP
+;type=ss7-sccp
+
+; pointcodetype: string: SS7 point code type (required)
+; Allowed values:
+;  ITU    ITU-T Q.704
+;  ANSI   ANSI T1.111.4
+;pointcodetype=
+
+; localpointcode: string: Local point code to accept as destination (required)
+; The format is network-cluster-member or number
+;localpointcode=
+
+; router: string: Name of the SS7 Router to attach to
+; A boolean false value disables attaching a router (unlikely)
+;router=ss7router
+
+; network: string: Name of linkset to attach to if router is disabled
+; This allows direct connection without MTP management (unlikely)
+;network=
+
+; management: string: Name of the SS7 management to use
+;management=sccp-mgm
+
+; hopcounter: integer: Default value for hop-counter
+; This value indicates the maximum number of gt translations that can be
+;  made before the message reach it's destination
+;hopcounter=15
+
+; ludt-support: boolean: True to allow sccp to send Long UnitData messages
+;ludt-support=false
+
+; segmentation-timeout: integer: Time in milliseconds before a segmented
+;  message is expired
+; Values: 5000-20000 ms
+;segmentation-timeout=5000
+
+; extended-monitoring: boolean: Compute an extended monitoring of sccp messages
+;extended-monitoring=no
+
+; print-messages: boolean: Print decoded protocol data units to output
+; This option is applied on reload
+; Defaults to no
+;print-messages=no
+
+; extended-debug: boolean: Print extended debug data (such as raw hex data)
+;  to output
+; This option is applied on reload
+; Defaults to no
+;extended-debug=no
+
+; endpoint: boolean: Force message processing if we are an endpoint
+; This option will allow sccp to process failed gt translations messages
+;  if a ssn is pressent
+;endpoint=true;
+
+
+; Example of SS7 Sccp Management
+;[sccp-mgm]
+
+; type: keyword: identifies the component as a SS7 SCCP Management
+; Values : ss7-sccp-itu-mgm
+; Must correspond with the pointcode type of the sccp
+;type=
+
+; test-timer: integer: Initial time in milliseconds for Subsystem Status
+;  Test to be generated
+; Values : 5000-10000
+; Note! This timer will increase exponentially until reaches 20000 if no
+;  corresponding message is received from the test initiator
+;test-timer=5000
+
+; print-messages: boolean: True to print sccp management messages
+;print-messages=false
+
+; remote: struct: Remote SCCP witch present interest for GTT
+;  (Global Title Translator)
+; This parameter allow us to monitor remote sccp's state
+; This option can be repeated to monitor multiple remote sccp's
+; Format: remote=pc(integer):ssn1,ssn2,....
+; pc : integer: Remote sccp pointcode
+; ssn1 - ssnn: integer; Remote sccp subsystems witch we are monitoring
+; Note! Ssn list may be empty if the remote sccp is a stp with GTT
+;remote=2057:1,2,3,4
+
+; concerned: struct: List of remote sccp's witch are concerned about local state
+; This parameter allow us to inform remote sccp's when local status has changed
+; This option can be repeated to inform multiple remote sccp's
+; Format: remote=pc(integer):ssn1,ssn2,....
+; pc : integer: Remote sccp pointcode
+; ssn1 - ssnn: integer; List of local subsystems witch are of interest for the
+;  remote sccp
+; Note! Ssn list may be empty if the remote sccp is concerned only if local
+;  sccp is available or not
+;concerned=2057:1,2,3,4
+
+; local-subsystems: string: Coma separated list of local subsystems
+; The subsystems present in this list will be monitored by this sccp management
+;local-subsystems=1,2,3,4,5,..
+
+; auto-monitor: boolean: True to auto monitor remote sccp's.
+; This flag enables remote sccp auto monitoring. When a message failed to be
+;  send to a remote sccp, the sccp management will automaticaly append the
+;  destination to the monitored remote sccp destinations
+;  to prevent sccp routing failure.
+; NOTE! Do not use this option if your GTT (Global Title Translator)
+;  can route to a large number of remote addresses
+;  because a lot of memory and cpu power will be used!
+;auto-monitor=false
+
+
+; Example of GTT (Global Title Translator)
+;[gtt]
+
+; type: keyword: Identifies this component as a GTT
+; NOTE! This type of gtt is based on yate messages system.
+;type=ss7-gtt
+
+; sccp: string: The name of the sccp to attach to this GTT
+;sccp=sccp
+
+
+; Example of dummy sccp user
+;[sccp-userd]
+; Sccp user dummy sends a message over sccp protocol.
+
+; type: keyword: Identifies this component as a Sccp User Dummy
+;type=ss7-sccpu-dummy
+
+; sccp: string: The name of the sccp to attach to this Sccp User
+;sccp=sccp
+
+; ssn: integer: Optional ssn asociated with this user
+; If this parameter is present this user will accept only the messages who
+;  have the same ssn
+;ssn=0
+
+
+; Example of a SS7 Transaction Capabilities Application Part
+; This component is created when encountering a section of this kind
+;[ss7tcap]
+; type: keyword: identifies the component as a SS7 Transfer Capabilities Application Part
+; type = ss7-tcap-ansi for ANSI TCAP
+; type = ss7-tcap-itu for ITU TCAP
+;type=
+
+; local_SSN: local SubSystem Number. Mandatory
+;local_SSN=
+
+; default_remote_SSN: remote SubSystem Number to provide to SCCP if the application does not provide one
+;default_remote_SSN=
+
+; default_remote_pointcode: remote Point Code to provide to SCCP if the application does not provide one
+;default_remote_pointcode=
+
+; pointcodetype: remote Point Code type. See above documentation for available types
+;pointcodetype=
+
+; sccp: Name of the SCCP component to create and be used by this TCAP
+; A section with the name given here must exist in order to configure the SCCP level
+;sccp=
+
+; default_hopcounter: HopCounter provided to SCCP if the application does not provide one
+; Values range 1-15, 0 or boolean false disables, boolean true sets to 15
+; A non-zero value will force using XUDT or LUDT instead of UDT messages
+;default_hopcounter=false
+
+; transact_timeout: Time in seconds to timeout a TCAP transaction after no more activity was registered on it
+; Defaults to 300 seconds
+;transact_timeout=300
+
+;print-messages: Boolean to enable/disable printing of decoding/encoding of TCAP messages
+; This option applies on reload
+;print-messages=false
+
+;extended-debug: Boolean to enable/disable printing of the step-by-step decoding/encoding of TCAP messages
+; This option applies on reload. print-messages must be true.
+;extended-debug=false
+
+
+[tcapuser_test]
+; mimicks  a TCAP User, which emits and receives TCAP messages in Message form
+; type is ss7-tcap-user to identify it as the specific user
+;type=ss7-tcap-user
+
+; tcap: The TCAP to which this user is to attach itself to it
+;tcap=

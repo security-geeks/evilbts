@@ -1,0 +1,386 @@
+#! /bin/sh
+
+# yate-config
+# This file is part of the YATE Project http://YATE.null.ro
+#
+# This is a generated file. You should never need to modify it.
+# Take a look at the source file yate-config.sh instead.
+#
+# Yet Another Telephony Engine - a fully featured software PBX and IVR
+# Copyright (C) 2005-2014 Null Team
+#
+# This software is distributed under multiple licenses;
+# see the COPYING file in the main directory for licensing
+# information for this specific distribution.
+#
+# This use of this software may be subject to additional restrictions.
+# See the LEGAL file in the main directory for details.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+ustr='Usage: yate-config [--cflags] [--includes] [--c-all]
+                   [--ldflags] [--libs] [--ld-all] [--ld-nostrip] [--ld-strip]
+		   [--config] [--modules] [--share]
+		   [--helpdir] [--scripts] [--skins]
+		   [--version] [--release] [--archlib] [--param=...]'
+if [ "$#" = 0 ]; then
+    echo "$ustr"
+    exit 0
+fi
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+datarootdir="@datarootdir@"
+shrdir="@datadir@/yate"
+moddir="@libdir@/yate"
+confdir="@sysconfdir@/yate"
+s1="@MODULE_CPPFLAGS@"
+s2="-I@includedir@/yate"
+s3="@MODULE_LDFLAGS@"
+s4="@MODULE_SYMBOLS@"
+s5="-lyate"
+
+while [ "$#" != 0 ]; do
+    case "$1" in
+	--version)
+	    echo "@PACKAGE_VERSION@"
+	    ;;
+	--release)
+	    echo "@PACKAGE_STATUS@@PACKAGE_RELEASE@"
+	    ;;
+	--revision)
+	    echo "@PACKAGE_REVISION@"
+	    ;;
+	--cflags)
+	    echo "$s1"
+	    ;;
+	--includes)
+	    echo "$s2"
+	    ;;
+	--c-all)
+	    echo "$s1 $s2"
+	    ;;
+	--ldflags)
+	    echo "$s3 $s4"
+	    ;;
+	--libs)
+	    echo "$s5"
+	    ;;
+	--ld-all)
+	    echo "$s3 $s4 $s5"
+	    ;;
+	--ld-nostrip)
+	    echo "$s3 $s5"
+	    ;;
+	--ld-strip)
+	    echo "$s4"
+	    ;;
+	--config)
+	    echo "$confdir"
+	    ;;
+	--modules)
+	    echo "$moddir"
+	    ;;
+	--share)
+	    echo "$shrdir"
+	    ;;
+	--helpdir)
+	    echo "$shrdir/help"
+	    ;;
+	--skins)
+	    echo "$shrdir/skins"
+	    ;;
+	--scripts)
+	    echo "$shrdir/scripts"
+	    ;;
+	--archlib)
+	    echo "@ARCHLIB@"
+	    ;;
+	--param=KDOC_BIN)
+	    echo "@KDOC_BIN@"
+	    ;;
+	--param=DOXYGEN_BIN)
+	    echo "@DOXYGEN_BIN@"
+	    ;;
+	--param=SONAME_OPT)
+	    echo "@SONAME_OPT@"
+	    ;;
+	--param=INSTALL_D)
+	    echo "@INSTALL_D@"
+	    ;;
+	--param=INSTALL_L)
+	    echo "@INSTALL_L@"
+	    ;;
+	--param=RTTI_OPT)
+	    echo "@RTTI_OPT@"
+	    ;;
+	--param=USE_RTTI)
+	    echo "@USE_RTTI@"
+	    ;;
+	--param=COREDUMPER_LIB)
+	    echo "@COREDUMPER_LIB@"
+	    ;;
+	--param=COREDUMPER_INC)
+	    echo "@COREDUMPER_INC@"
+	    ;;
+	--param=HAVE_COREDUMPER)
+	    echo "@HAVE_COREDUMPER@"
+	    ;;
+	--param=HAVE_MALLINFO)
+	    echo "@HAVE_MALLINFO@"
+	    ;;
+	--param=QT4_STATIC_MODULES)
+	    echo "@QT4_STATIC_MODULES@"
+	    ;;
+	--param=QT4_VER)
+	    echo "@QT4_VER@"
+	    ;;
+	--param=QT4_MOC)
+	    echo "@QT4_MOC@"
+	    ;;
+	--param=QT4_LIB_NET)
+	    echo "@QT4_LIB_NET@"
+	    ;;
+	--param=QT4_INC_NET)
+	    echo "@QT4_INC_NET@"
+	    ;;
+	--param=QT4_LIB)
+	    echo "@QT4_LIB@"
+	    ;;
+	--param=QT4_INC)
+	    echo "@QT4_INC@"
+	    ;;
+	--param=HAVE_QT4)
+	    echo "@HAVE_QT4@"
+	    ;;
+	--param=LIBUSB_LIB)
+	    echo "@LIBUSB_LIB@"
+	    ;;
+	--param=LIBUSB_INC)
+	    echo "@LIBUSB_INC@"
+	    ;;
+	--param=HAVE_LIBUSB)
+	    echo "@HAVE_LIBUSB@"
+	    ;;
+	--param=ZLIB_LIB)
+	    echo "@ZLIB_LIB@"
+	    ;;
+	--param=ZLIB_INC)
+	    echo "@ZLIB_INC@"
+	    ;;
+	--param=HAVE_ZLIB)
+	    echo "@HAVE_ZLIB@"
+	    ;;
+	--param=OPENSSL_VER)
+	    echo "@OPENSSL_VER@"
+	    ;;
+	--param=OPENSSL_LIB)
+	    echo "@OPENSSL_LIB@"
+	    ;;
+	--param=OPENSSL_INC)
+	    echo "@OPENSSL_INC@"
+	    ;;
+	--param=HAVE_OPENSSL)
+	    echo "@HAVE_OPENSSL@"
+	    ;;
+	--param=H323_RUN)
+	    echo "@H323_RUN@"
+	    ;;
+	--param=H323_LIB)
+	    echo "@H323_LIB@"
+	    ;;
+	--param=H323_INC)
+	    echo "@H323_INC@"
+	    ;;
+	--param=HAVE_H323)
+	    echo "@HAVE_H323@"
+	    ;;
+	--param=SPANDSP_LIB)
+	    echo "@SPANDSP_LIB@"
+	    ;;
+	--param=SPANDSP_INC)
+	    echo "@SPANDSP_INC@"
+	    ;;
+	--param=HAVE_SPANDSP)
+	    echo "@HAVE_SPANDSP@"
+	    ;;
+	--param=AMRNB_LIB)
+	    echo "@AMRNB_LIB@"
+	    ;;
+	--param=AMRNB_INC)
+	    echo "@AMRNB_INC@"
+	    ;;
+	--param=HAVE_AMRNB)
+	    echo "@HAVE_AMRNB@"
+	    ;;
+	--param=SPEEX_LIB)
+	    echo "@SPEEX_LIB@"
+	    ;;
+	--param=SPEEX_INC)
+	    echo "@SPEEX_INC@"
+	    ;;
+	--param=HAVE_SPEEX)
+	    echo "@HAVE_SPEEX@"
+	    ;;
+	--param=ISAC_INC)
+	    echo "@ISAC_INC@"
+	    ;;
+	--param=HAVE_ISAC)
+	    echo "@HAVE_ISAC@"
+	    ;;
+	--param=ILBCWR_INC)
+	    echo "@ILBCWR_INC@"
+	    ;;
+	--param=HAVE_ILBCWR)
+	    echo "@HAVE_ILBCWR@"
+	    ;;
+	--param=ILBC_INC)
+	    echo "@ILBC_INC@"
+	    ;;
+	--param=HAVE_ILBC)
+	    echo "@HAVE_ILBC@"
+	    ;;
+	--param=GSM_LIB)
+	    echo "@GSM_LIB@"
+	    ;;
+	--param=GSM_INC)
+	    echo "@GSM_INC@"
+	    ;;
+	--param=HAVE_GSM)
+	    echo "@HAVE_GSM@"
+	    ;;
+	--param=HAVE_COREAUDIO)
+	    echo "@HAVE_COREAUDIO@"
+	    ;;
+	--param=HAVE_ALSA)
+	    echo "@HAVE_ALSA@"
+	    ;;
+	--param=HAVE_SOUNDCARD)
+	    echo "@HAVE_SOUNDCARD@"
+	    ;;
+	--param=WANPIPE_FLAGS)
+	    echo "@WANPIPE_FLAGS@"
+	    ;;
+	--param=HAVE_WANPIPE_TDM)
+	    echo "@HAVE_WANPIPE_TDM@"
+	    ;;
+	--param=HAVE_WANPIPE)
+	    echo "@HAVE_WANPIPE@"
+	    ;;
+	--param=BUILD_TDMCARD)
+	    echo "@BUILD_TDMCARD@"
+	    ;;
+	--param=BUILD_WPCARD)
+	    echo "@BUILD_WPCARD@"
+	    ;;
+	--param=ZAP_FLAGS)
+	    echo "@ZAP_FLAGS@"
+	    ;;
+	--param=HAVE_ZAP)
+	    echo "@HAVE_ZAP@"
+	    ;;
+	--param=SQLITE_LIB)
+	    echo "@SQLITE_LIB@"
+	    ;;
+	--param=SQLITE_INC)
+	    echo "@SQLITE_INC@"
+	    ;;
+	--param=HAVE_SQLITE)
+	    echo "@HAVE_SQLITE@"
+	    ;;
+	--param=MYSQL_VER)
+	    echo "@MYSQL_VER@"
+	    ;;
+	--param=MYSQL_LIB)
+	    echo "@MYSQL_LIB@"
+	    ;;
+	--param=MYSQL_INC)
+	    echo "@MYSQL_INC@"
+	    ;;
+	--param=HAVE_MYSQL)
+	    echo "@HAVE_MYSQL@"
+	    ;;
+	--param=PGSQL_LIB)
+	    echo "@PGSQL_LIB@"
+	    ;;
+	--param=PGSQL_INC)
+	    echo "@PGSQL_INC@"
+	    ;;
+	--param=HAVE_PGSQL)
+	    echo "@HAVE_PGSQL@"
+	    ;;
+	--param=HAVE_MACOSX_SUPPORT)
+	    echo "@HAVE_MACOSX_SUPPORT@"
+	    ;;
+	--param=MACOSX_INC)
+	    echo "@MACOSX_INC@"
+	    ;;
+	--param=INTERNAL_REGEX)
+	    echo "@INTERNAL_REGEX@"
+	    ;;
+	--param=RESOLV_LIB)
+	    echo "@RESOLV_LIB@"
+	    ;;
+	--param=RESOLV_INC)
+	    echo "@RESOLV_INC@"
+	    ;;
+	--param=HAVE_RESOLV)
+	    echo "@HAVE_RESOLV@"
+	    ;;
+	--param=SCTP_FLAGS)
+	    echo "@SCTP_FLAGS@"
+	    ;;
+	--param=HAVE_SCTP_NETINET)
+	    echo "@HAVE_SCTP_NETINET@"
+	    ;;
+	--param=HAVE_SCTP)
+	    echo "@HAVE_SCTP@"
+	    ;;
+	--param=SSE2_OPS)
+	    echo "@SSE2_OPS@"
+	    ;;
+	--param=ATOMIC_OPS)
+	    echo "@ATOMIC_OPS@"
+	    ;;
+	--param=INLINE_FLAGS)
+	    echo "@INLINE_FLAGS@"
+	    ;;
+	--param=NETDB_FLAGS)
+	    echo "@NETDB_FLAGS@"
+	    ;;
+	--param=DLOPEN_LIB)
+	    echo "@DLOPEN_LIB@"
+	    ;;
+	--param=THREAD_LIB)
+	    echo "@THREAD_LIB@"
+	    ;;
+	--param=HAVE_POLL)
+	    echo "@HAVE_POLL@"
+	    ;;
+	--param=HAVE_INT_TZ)
+	    echo "@HAVE_INT_TZ@"
+	    ;;
+	--param=HAVE_GMTOFF)
+	    echo "@HAVE_GMTOFF@"
+	    ;;
+	--param=HAVE_SOCKADDR_LEN)
+	    echo "@HAVE_SOCKADDR_LEN@"
+	    ;;
+	--param=HAVE_PRCTL)
+	    echo "@HAVE_PRCTL@"
+	    ;;
+	--param=HAVE_GETCWD)
+	    echo "@HAVE_GETCWD@"
+	    ;;
+	--param=HAVE_BLOCK_RETURN)
+	    echo "@HAVE_BLOCK_RETURN@"
+	    ;;
+	*)
+	    echo "I didn't understand: $1" >&2
+	    echo "$ustr" >&2
+	    exit 1
+	    ;;
+    esac
+    shift
+done

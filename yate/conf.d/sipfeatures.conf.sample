@@ -1,0 +1,36 @@
+; This file configures the SIP feature module
+
+[general]
+
+; expires_min: int: Minimum allowed expiring time in seconds
+;expires_min=60
+
+; expires_def: int: Default expiring time if not present in requests
+;expires_def=600
+
+; expires_max: int: Value used to limit the expiring time to something sane
+;expires_max=3600
+
+; forcedialogdata: boolean: Force (fill if missing) some parameters (dialog.callid,
+;  dialog.localtag, dialog.remotetag, dialog.remoteuri) in dialog state notification,
+;  if made for a valid dialog (dialog.id is not empty)
+; Defaults to enable
+;forcedialogdata=enable
+
+; verbosexml: boolean: Build verbose XML bodies (add line breaks and spaces)
+; A dialog XML notification body will spare about 38 chars if this option is disabled
+; Defaults to enable
+;verbosexml=enable
+
+[allow_events]
+; Restrict/allow subscriptions to individual events
+; If an event is disabled, no subscriptions to it will be allowed
+
+; default: boolean: Default value if an event is not listed here
+;default=enable
+
+; dialog: boolean: Enable/disable subscriptions to dialog state events
+;dialog=enable
+
+; dialog: boolean: Enable/disable subscriptions to message waiting events
+;message-summary=enable

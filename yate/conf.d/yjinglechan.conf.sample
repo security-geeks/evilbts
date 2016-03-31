@@ -1,0 +1,194 @@
+; This file keeps the configuration for the Jingle channel
+
+[general]
+; Global settings of Jingle channel
+
+; servermode: boolean: Server/client mode
+; This parameter can be used to override yate running mode
+; Defaults to true if yate is running in non client mode, false otherwise
+;servermode=
+
+; domains: string: Comma separated list of domains serviced by the jingle channel
+; The parameter is not used in client mode
+; When running in non client mode any domain should be a jabber server (sub)domain
+;domains=
+
+; resources: string: Comma separated list of resources serviced by the jingle channel
+; The parameter is not used in client mode
+; The first resource will be the default one (for outgoing calls)
+; If this parameter is empty the module will handle all resources
+;resources=
+
+; resource_priority: integer: Resource priority for presence sent by the module
+; Interval allowed -128..127
+; Defaults to 0
+;resource_priority=0
+
+; jingle_version: integer: Jingle session version to use for outgoing calls
+; Defaults to the newest version if missing or invalid
+; Allowed values are 0 or 1
+; This parameter can be overridden when routing by an 'ojingle_version' parameter
+;jingle_version=
+
+; jingle_flags: string: Comma separated list of default jingle session flags
+; Available flags:
+;  - noping: Don't send ping (empty session info)
+; This parameter can be overridden when routing by an 'ojingle_flags' parameter for
+;  outgoing calls or "jingle_flags" for incoming calls
+;jingle_flags=
+
+; maxchans: int: Maximum number of channels running at once
+; A value of 0 specifies that there is no limit enforced.
+; Defaults to the value set by the maxchans setting from yate.conf
+;maxchans=
+
+; accept_relay: bool: Accept a "relay" transport type even if we had another type before
+; This works only with Jingle version 0 (Google Talk, libjingle)
+;accept_relay=disable in server mode, enable in client mode
+
+; singletone: boolean: Send chan tones as single characters.
+; If disabled, the whole text received as chan tone(s) will be sent
+;  in the same XML element
+; Defaults to enable
+;singletone=enable
+
+; imtochantext: boolean: Send received IM messages as chan.text if a channel is found
+; If disabled, an im.route message will be pushed into the engine
+; Defaults to disable
+;imtochantext=disable
+
+; localip: string: Set this machine's IP address. If missing, we will try to guess one
+; The local machine's IP address is used to negotiate the audio stream
+;localip=
+
+; anonymous_caller: string: Set the caller name if missing for outgoing calls
+; Defaults to unk_caller
+;anonymous_caller=unk_caller
+
+; request_subscribe: boolean: Make a subscribe request before probing a remote user
+;   Defaults to enable
+; pending_timeout: integer: How much an outgoing call will wait for a response to a probe
+;   Defaults to 10000
+; The parameters are not used in client mode
+; These options are used when we want to make an outgoing call and we can't do that because we don't have
+;   a resource with audio capability for the called party, so we have to probe its presence
+; Since we might not receive a response if the caller is not subscribed to called's party presence,
+;   we should make a subscribe request first (enabling request_subscribe will do that)
+; The jingle channel will wait for the time given by pending_timeout for an an appropriate response
+; If no response is received within pending_timeout interval the call will be dropped
+; When receiving a valid response, the jingle channel will start to negotiate the call
+; pending_timeout actually extends the time an outgoing call may be in a not answered state
+;request_subscribe=enable
+;pending_timeout=10000
+
+; auto_subscribe: boolean: Automatically respond to (un)subscribe requests
+; The parameter is not used in client mode
+; Defaults to disable
+; WARNING: If auto_subscribe is enabled when the module is handling the same domain(s) as
+;  the jabber server this might lead to subscription request aproval on behalf of 'real'
+;  jabber users!
+;auto_subscribe=disable
+
+; stanza_timeout: integer: The timeout interval (in milliseconds) of a stanza sent by a
+;  jingle session
+; Session initiate and ping timeout will automatically lead to session termination
+; Minimum allowed value is 10000
+; Defaults to 20000 if missing or to the minimum value if invalid
+;stanza_timeout=20000
+
+; ping_interval: integer: The interval (in milliseconds) to ping the remote party of a
+;  jingle session
+; If enabled and the ping element fails the session will be terminated
+; Minimum allowed value is 60000. Set it to 0 to disable ping
+; Defaults to 300000 if missing or invalid
+; If enabled, it's value must be greater then stanza_timeout
+;ping_interval=300000
+
+; resource.notify: integer: Override the priority of module's resource.notify message handler
+;resource.notify=
+
+; redirectcount: integer: Default value for outgoing calls redirect counter
+; This parameter controls the behaviour of an outgoing call terminated
+;  with 'redirect' reason containing a non empty target
+; If non 0 the counter is decreased. If the target is an XMPP uri the call will
+;  be re-executed internally.
+; If the counter is 0 when terminated, the call parameters list will be filled with
+;  session parameters to let the PBX deal with it.
+; This parameter can be overridden from routing
+;redirectcount=0
+
+; dtmfmethod: string: Default value for the method used to send DTMFs
+; Allowed values:
+;  jingle: Use the jingle protocol
+;  rfc2833: Send RFC 2833 DTMFs
+;  inband: Generate inband tones
+;  chat: Send tones as chat messages
+; This parameter can be overridden from routing
+;dtmfmethod=jingle
+
+; jingle_ring: string: Comma separated list of flags controlling the ringing behaviour of
+;  incoming channels
+; This parameter is applied on reload and can be overridden from routing
+; Flags:
+;   none:               Don't send ringing notification
+;   noearlysession:     Don't use early session content
+;   sessioncontent:     Add session content to jingle ringing stanza.
+;                       This will also set 'noearlysession'
+;   sessioncontentonly: Send ringing notification only if a content can be added to it.
+;                       This flag is ignored if 'sessioncontent' is not set
+;jingle_ring=
+
+[codecs]
+; This section allows to individually enable or disable the codecs
+
+; default: bool: Enable all unlisted codecs by default
+default=false
+
+; mulaw: bool: Companded-only G711 mu-law (PCMU/8000)
+mulaw=true
+
+; alaw: bool: Companded-only G711 a-law (PCMU/8000)
+alaw=true
+
+; gsm: bool: European GSM 06.10 (GSM/8000)
+gsm=default
+
+; ilbc: bool: Internet Low Bandwidth Codec (iLBC/8000)
+;ilbc=default
+
+; lpc10: bool: Linear Prediction Codec (LPC/8000)
+lpc10=default
+
+; slin: bool: Signed Linear 16-bit uncompressed (L16/8000)
+slin=default
+
+; g723: bool: ITU G.723 all variations (G723/8000)
+g723=default
+
+; g726: bool: ITU G.726 32-bit (G726-32/8000)
+g726=default
+
+; g728: bool: ITU G.728 all variations (G728/8000)
+g728=default
+
+; g729: bool: ITU G.729 all variations (G729/8000)
+g729=default
+
+; isac/16000: bool: ISAC wide band
+isac/16000=default
+
+; isac/32000: bool: ISAC super wide band
+isac/32000=default
+
+
+[hacks]
+; This section holds the dirty stuff required to work with some broken
+;  or old implementations
+
+; ilbc_forced: string: Format to offer as iLBC, can be: ilbc20 or ilbc30
+; Defaults to ilbc30
+;ilbc_forced=ilbc30
+
+; ilbc_default: string: Format to use for iLBC when packetization is unknown
+; Defaults to ilbc30
+;ilbc_default=ilbc30

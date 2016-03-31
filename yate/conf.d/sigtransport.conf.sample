@@ -1,0 +1,100 @@
+;[general]
+; max_down: long: The time in seconds after a sctp socket is in connection
+;  hanging state. After this time expires the connection is re-established.
+; If the connection is not re established the timer will exponential back off
+;  until reaches 60 seconds
+;max_down=10
+
+; Each section in this file describes a SIGTRAN connection
+; Connections are referenced from other configurations describing the upper layer
+
+;[name-of-connection]
+; The name of the section identifies the connection
+
+; type: keyword: Socket type - sctp, tcp, udp, unix
+;type=sctp
+
+; stream: bool: Socket connection type.
+; Designed for SCTP sockets to create a stream socket or a sequenced packet socket
+; NOTE: for M2PA if stream is false the M2PA autostart should be on true on both ends,
+;  if stream is true the M2PA autostart must be true only at one end
+;stream=true for TCP or UNIX sockets, false for other types
+
+; local: string: Primary local address
+; Format is ipv4:port like: 1.1.1.1:3566
+;local=
+
+; localN: string: Additional local addresses, SCTP only
+; Multiple addresses can be specified by incrementing the 1-based index at the end of 'local'
+; The address format is ip:port like:
+;  local1=1.2.3.4:3566
+;  local2=2.3.4.5:3566
+;local1=
+
+; remote: string: Primary remote address
+; Format is ipv4:port like: 2.2.2.2:3566
+;remote=
+
+; remoteN: string: Additional remote addresses, SCTP only
+; Multiple addresses can be specified by incrementing the 1-based index at the end of 'remote'
+; The address format is ip:port like:
+;  remote1=5.6.7.8:3566
+;  remote2=6.7.8.9:3566
+;remote1=
+
+; endpoint: bool: Set to true if this is an endpoint that actively tries to connect,
+;  false to listen for remote connections
+;endpoint=false
+
+; linger: int; How much to block waiting for socket to close.
+;linger = 0
+
+; listen-notify: boolean: True to notify the upper layer that a new incoming connection has been established
+; Default to true
+;listen-notify=true
+
+
+; SCTP parameters
+; NOTE these parameters will be set only for SCTP sockets
+; Note! On some platforms this parameters may not be supported
+
+; Set initial retransmission interval in milliseconds
+; Ex: rto_initial = 400
+;rto_initial=
+
+; Set maximum retransmission interval in milliseconds
+; Ex: rto_max = 800
+;rto_max=
+
+; Set minimum retransmission interval in milliseconds
+; Ex: rto_min = 200
+;rto_min=
+
+; Set heartbeat interval in milliseconds
+; Ex: hb_interval = 5000
+;hb_interval=
+
+; Set maximum number of retransmissions before the SCTP connection is considered down
+; Ex: max_retrans = 5
+;max_retrans=
+
+; Enable / disable SCTP heartbeat. Default is enabled
+; Ex: hb_enabled = true
+;hb_enabled=
+
+; Set sctp delayed ack parameters
+; Note! Both sack_delay and sack_freq must be present and have values different than 0 to be successfully applied
+
+; Set ack time interval for sccp to cumulative acknowledge the received packets
+; Max value 500 in milliseconds
+; Ex: sack_delay = 50
+;sack_delay=
+
+; Set the maximum number of unacknowledged packets
+; Ex: sack_freq = 2
+; Note! If you set this to 1 you will disable the sctp acknowledge algorithm
+;sack_freq=
+
+; Set sctp socket adaptation parameter
+; E.g. : sctp_adaptation=1
+;sctp_adaptation=

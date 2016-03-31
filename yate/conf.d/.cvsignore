@@ -1,0 +1,7 @@
+Makefile
+YateLocal*
+core*
+*.conf
+*.orig
+*~
+.*.swp

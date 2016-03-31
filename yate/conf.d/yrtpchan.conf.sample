@@ -1,0 +1,102 @@
+[general]
+; This section sets global network level variables
+
+; ipv6_support: boolean: Enable or disable IPv6 support
+; This parameter is applied on reload
+; This parameter is ignored if yate was not built with IPv6 support
+; It can be overridden in chan.rtp messages
+; Defaults to no
+;ipv6_support=no
+
+; minport: int: Minimum port range to allocate
+;minport=16384
+
+; maxport: int: Maximum port range to allocate
+;maxport=32768
+
+; localip: ipaddress: Local IP address to use instead of guessing
+; IPv6: An interface name can be added at the end of the address to bind on a specific
+;  interface. This is mandatory for Link Local addresses (e.g. localip=fe80::1%eth0)
+;localip=
+
+; tos: keyword: Type Of Service or DiffServ to set in outgoing UDP packets
+; numeric TOS / DiffServ value or:
+;  lowdelay, throughput, reliability, mincost
+;  cs0, ... cs7, af11, af12, af13, af21, ... af43, expedited, voice
+;tos=0
+
+; udpbuf: int: Requested size of UDP socket's receive buffer
+; Valid values are 1024 to 65536, 0 to use kernel default
+;udpbuf=0
+
+; buffer: int: Maximum buffer size - used to fragment octet (G.711) audio streams
+;buffer=240
+
+; autoaddr: bool: Auto change outgoing RTP address:port to match incoming
+;autoaddr=enable
+
+; anyssrc: bool: Accept any incoming SSRC, even if it changes frequently
+;anyssrc=enable
+
+; padding: int: Pad the RTP payload to a multiple of this setting
+; Supported values are between 2 and 128
+;padding=0
+
+; rtcp: bool: Allocate socket for the RTCP protocol by default
+;rtcp=enabled
+
+; rtcp_interval: int: RTCP report interval in ms (500-60000), zero disables
+;rtcp_interval=4500
+
+; drillhole: bool: Attempt to drill a hole through a firewall or NAT
+;drillhole=disable in server mode, enable in client mode
+
+; minjitter: int: Amount to attempt to keep in the dejitter buffer in msec
+; Valid values 5 to maxjitter-30, negative disables dejitter buffer
+;minjitter=50
+
+; maxjitter: int: Maximum dejitter buffer size in msec
+; Valid values 50 to 1000, 0 disables dejitter buffer
+;maxjitter=120 in client mode, 0 in server mode
+
+; monitoring: bool: Emit the messages required for SNMP monitoring
+; You will also need to set monitor=yes in section [rtp] of monitoring.conf
+;monitoring=no
+
+; thread: keyword: Default priority of the data service threads
+; Can be one of: lowest, low, normal, high, highest
+; It is a bad idea to set a low priority for anything but testing
+;thread=normal
+
+; defsleep: int: Default in-loop sleep time for new RTP sessions in milliseconds
+;defsleep=5
+
+; minsleep: int: Minimum allowed in-loop sleep time in milliseconds
+;minsleep=1
+
+; rtp_warn_seq: bool: Warn on receiving invalid RTP sequence number
+; If disabled the log message will be put at level 9
+; This parameter is applied on reload for new sessions only
+; It can be overridden in initial chan.rtp message or chan.attach message
+;rtp_warn_seq=enable
+
+
+[timeouts]
+; This section controls the behaviour when RTP and RTCP data is missing
+
+; timeout: int: RTP/RTCP receiver timeout in ms (500-60000), zero disables
+;timeout=3000
+
+; udptl_timeout: int: UDPTL receiver timeout in ms (500-60000), zero disables
+;udptl_timeout=25000
+
+; notifymsg: string: Name of the notification message sent on timeout
+; Usually it should be chan.notify or call.drop, empty disables the message
+;notifymsg=
+
+; warnfirst: bool: Emit timeout warnings if no RTP packet was received
+; Once a packet is received further timeouts are controlled by warnlater
+;warnfirst=yes
+
+; warnlater: bool: Emit timeout warnings even if there was initially some RTP
+;warnlater=no

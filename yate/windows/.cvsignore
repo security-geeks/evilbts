@@ -1,0 +1,14 @@
+Debug
+Release
+Output
+Runtimes
+*.plg
+*.aps
+*.opt
+*.ncb
+*.clw
+*.suo
+*.orig
+*~
+*.bak
+.*.swp

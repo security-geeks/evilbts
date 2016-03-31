@@ -1,0 +1,95 @@
+#!/bin/sh
+#
+# yate:	Starts the Yet Another Telephony Engine
+#
+# chkconfig: 345 95 10
+# description: Starts and stops YATE used as Telephony Server
+#
+# processname: yate
+# pidfile: /var/run/yate.pid
+#
+
+# Extra Yate command line options, do not edit them here
+OPTS="-F -s -r -l /var/log/yate -vvv -Df"
+
+# To override create file /etc/sysconfig/yate and put OPTS=... in it
+[ -r /etc/sysconfig/yate ] && . /etc/sysconfig/yate
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+
+start() {
+    echo -n $"Starting YATE: "
+    force=
+    case "X$1" in
+	Xcheck)
+	    if kill -0 `cat /var/run/yate.pid 2>/dev/null` 2>/dev/null; then
+		if type warning >/dev/null 2>&1; then
+		    warning
+		else
+		    echo_warning
+		fi
+		RETVAL=0
+		echo
+		return
+	    fi
+	    ;;
+	Xforce)
+	    force="--force"
+	    ;;
+    esac
+    export PWLIB_ASSERT_ACTION=C
+    daemon $force yate -d -p /var/run/yate.pid $OPTS
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/yate
+}
+
+stop() {
+    echo -n $"Stopping YATE: "
+    killproc yate
+    RETVAL=$?
+    echo
+    if [ $RETVAL -eq 0 ]; then
+        rm -f /var/lock/subsys/yate
+    fi
+}
+
+# See how we were called.
+case "$1" in
+    start)
+	start check
+	;;
+    stop)
+	stop
+	;;
+    status)
+        status yate
+	RETVAL=$?
+        ;;
+    restart)
+	stop
+	start
+	;;
+    condrestart)
+	if [ -f /var/lock/subsys/yate ]; then
+	    stop
+	    start
+	fi
+	;;
+    force-start)
+	start force
+	;;
+    reload)
+	echo -n $"Reloading YATE: "
+  	killproc yate -HUP
+	RETVAL=$?
+	echo
+        ;;
+    *)
+	echo $"Usage: $0 {start|stop|status|restart|condrestart|force-start|reload}"
+	;;
+esac
+exit $RETVAL

@@ -1,0 +1,39 @@
+[general]
+; Global settings of the clustering module
+
+; enabled: boolean: Enable clustering module operation
+;enabled=true if regexp and callto are set, false if any of them is empty
+
+; prefix: string: Prefix used for cluster resources
+;prefix=cluster
+
+; regexp: string: Regular expression describing node name match rules
+;regexp=
+
+; callto: string: Template for forwarding the call to target node
+;callto=
+
+; locate: string: Message used for locating dynamic resources on cluster nodes
+;locate=cluster.locate
+
+; user.register: boolean: Enable modifying registration messages for clustering
+;user.register=yes
+
+; call.cdr: boolean: Enable adding prefix and node information to CDR messages
+;call.cdr=yes
+
+
+[priorities]
+; Handler priorities for each message, applied only on first initialization
+
+; call.route: int: Priority of route message handler (on target node)
+;call.route=50
+
+; call.execute: int: Priority of execute message handler (on source node)
+;call.execute=50
+
+; user.register: int: Priority of registration message handler (on registrar)
+;user.register=50
+
+; call.cdr: int: Priority of CDR message handler (all nodes)
+;call.cdr=25

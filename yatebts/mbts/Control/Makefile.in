@@ -1,0 +1,8 @@
+# Makefile
+# This file holds the make rules for the control lib
+
+INCLUDES := $(ALL_INCLUDES)
+INCFILES := ../../config.h ControlCommon.h RadioResource.h
+
+LIBS := libControl.a
+OBJS := ControlCommon.o DCCHDispatch.o RadioResource.o SMSCB.o

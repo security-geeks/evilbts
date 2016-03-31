@@ -1,0 +1,8 @@
+# Makefile
+# This file holds the make rules for the CLI lib
+
+INCLUDES := $(ALL_INCLUDES)
+INCFILES := ../../config.h CLI.h
+
+LIBS := libCLI.a
+OBJS := CLI.o

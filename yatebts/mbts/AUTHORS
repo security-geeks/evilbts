@@ -1,0 +1,133 @@
+#
+# Copyright 2008, 2009 Free Software Foundation, Inc.
+# Copyright 2014 Legba, Inc.
+# 
+# 
+# This is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+# 
+# This is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+David A. Burgess, david.burgess@leg.ba:
+    CLI/CLI.cpp
+    CLI/CLI.h
+    CommonLibs/Assert.h
+    CommonLibs/BitVector.cpp
+    CommonLibs/BitVectorTest.cpp
+    CommonLibs/Configuration.cpp
+    CommonLibs/Configuration.h
+    CommonLibs/ConfigurationTest.cpp
+    CommonLibs/Interthread.h
+    CommonLibs/InterthreadTest.cpp
+    CommonLibs/LinkedLists.cpp
+    CommonLibs/LinkedLists.h
+    CommonLibs/Regexp.h
+    CommonLibs/RegexpTest.cpp
+    CommonLibs/Sockets.cpp
+    CommonLibs/Sockets.h
+    CommonLibs/SocketsTest.cpp
+    CommonLibs/Threads.cpp
+    CommonLibs/Threads.h
+    CommonLibs/Timeval.cpp
+    CommonLibs/Timeval.h
+    CommonLibs/TimevalTest.cpp
+    CommonLibs/Vector.h
+    CommonLibs/VectorTest.cpp
+    Control/ControlCommon.cpp
+    Control/ControlCommon.h
+    Control/RadioResource.cpp
+    Control/DCCHDispatch.cpp
+    GSM/GSM610Tables.cpp
+    GSM/GSM610Tables.h
+    GSM/GSMCommon.cpp
+    GSM/GSMCommon.h
+    GSM/GSMConfig.h
+    GSM/GSML1FEC.cpp
+    GSM/GSML1FEC.h
+    GSM/GSML2LAPDm.cpp
+    GSM/GSML2LAPDm.h
+    GSM/GSML3CommonElements.cpp
+    GSM/GSML3CommonElements.h
+    GSM/GSML3Message.cpp
+    GSM/GSML3Message.h
+    GSM/GSML3RRElements.cpp
+    GSM/GSML3RRElements.h
+    GSM/GSML3RRMessages.cpp
+    GSM/GSML3RRMessages.h
+    GSM/GSMLogicalChannel.h
+    GSM/GSMTDMA.cpp
+    GSM/GSMTDMA.h
+    GSM/GSMTransfer.cpp
+    GSM/GSMTransfer.h
+    LICENSEBLOCK
+    TRXManager/TRXManager.cpp
+    Transceiver/Complex.h
+    apps/OpenBTS.cpp
+
+Harvind S. Samra, harvind@rangenetworks.com:
+    Control/RadioResource.cpp
+    GSM/GSMConfig.h
+    GSM/GSMTransfer.h
+    LICENSEBLOCK
+    Transceiver/ComplexTest.cpp
+    Transceiver/Transceiver.cpp
+    Transceiver/Transceiver.h
+    Transceiver/USRPDevice.cpp
+    Transceiver/USRPDevice.h
+    Transceiver/USRPping.cpp
+    Transceiver/radioInterface.cpp
+    Transceiver/radioInterface.h
+    Transceiver/rcvLPF_651.h
+    Transceiver/runTransceiver.cpp
+    Transceiver/sendLPF_961.h
+    Transceiver/sigProcLib.cpp
+    Transceiver/sigProcLib.h
+    Transceiver/sigProcLibTest.cpp
+    Transceiver/sweepGenerator.cpp
+    Transceiver/testRadio.cpp
+
+Raffi Sevlian, raffisev@gmail.com:
+    Control/ControlCommon.cpp
+    Control/ControlCommon.h
+    Control/DCCHDispatch.cpp
+    Control/RadioResource.cpp
+    GSM/GSMCommon.h
+    GSM/GSMConfig.h
+    GSM/GSML1FEC.h
+    GSM/GSML3CommonElements.cpp
+    GSM/GSML3CommonElements.h
+    GSM/GSML3Message.cpp
+    GSM/GSML3Message.h
+    GSM/GSML3RRElements.cpp
+    GSM/GSML3RRElements.h
+    GSM/GSML3RRMessages.cpp
+    GSM/GSML3RRMessages.h
+    GSM/GSMLogicalChannel.h
+    GSM/GSMSAPMux.cpp
+    GSM/GSMSAPMux.h
+    GSM/GSMTransfer.h
+    LICENSEBLOCK
+    TRXManager/TRXManager.h
+
+Alon Levy, alonlevy1@gmail.com
+    RRLPMessages.cpp
+    RRLPMessages.h
+    RRLPTest.cpp
+
+Pat Thompson, pat.thompson@rangenetworks.com
+    GPRS/*
+
+Paul Chitescu, paul@null.ro
+    Connection/*
+    Control/DCCHDispatch.cpp
+

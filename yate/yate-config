@@ -1,0 +1,386 @@
+#! /bin/sh
+
+# yate-config
+# This file is part of the YATE Project http://YATE.null.ro
+#
+# This is a generated file. You should never need to modify it.
+# Take a look at the source file yate-config.sh instead.
+#
+# Yet Another Telephony Engine - a fully featured software PBX and IVR
+# Copyright (C) 2005-2014 Null Team
+#
+# This software is distributed under multiple licenses;
+# see the COPYING file in the main directory for licensing
+# information for this specific distribution.
+#
+# This use of this software may be subject to additional restrictions.
+# See the LEGAL file in the main directory for details.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+ustr='Usage: yate-config [--cflags] [--includes] [--c-all]
+                   [--ldflags] [--libs] [--ld-all] [--ld-nostrip] [--ld-strip]
+		   [--config] [--modules] [--share]
+		   [--helpdir] [--scripts] [--skins]
+		   [--version] [--release] [--archlib] [--param=...]'
+if [ "$#" = 0 ]; then
+    echo "$ustr"
+    exit 0
+fi
+prefix="/usr/local"
+exec_prefix="${prefix}"
+datarootdir="${prefix}/share"
+shrdir="${datarootdir}/yate"
+moddir="${exec_prefix}/lib/yate"
+confdir="${prefix}/etc/yate"
+s1="-Wno-overloaded-virtual  -fno-exceptions -fPIC -DHAVE_GCC_FORMAT_CHECK -DHAVE_BLOCK_RETURN"
+s2="-I${prefix}/include/yate"
+s3="-rdynamic -shared -Wl,--unresolved-symbols=ignore-in-shared-libs"
+s4="-Wl,--retain-symbols-file,/dev/null"
+s5="-lyate"
+
+while [ "$#" != 0 ]; do
+    case "$1" in
+	--version)
+	    echo "5.5.1"
+	    ;;
+	--release)
+	    echo "devel1"
+	    ;;
+	--revision)
+	    echo "6107"
+	    ;;
+	--cflags)
+	    echo "$s1"
+	    ;;
+	--includes)
+	    echo "$s2"
+	    ;;
+	--c-all)
+	    echo "$s1 $s2"
+	    ;;
+	--ldflags)
+	    echo "$s3 $s4"
+	    ;;
+	--libs)
+	    echo "$s5"
+	    ;;
+	--ld-all)
+	    echo "$s3 $s4 $s5"
+	    ;;
+	--ld-nostrip)
+	    echo "$s3 $s5"
+	    ;;
+	--ld-strip)
+	    echo "$s4"
+	    ;;
+	--config)
+	    echo "$confdir"
+	    ;;
+	--modules)
+	    echo "$moddir"
+	    ;;
+	--share)
+	    echo "$shrdir"
+	    ;;
+	--helpdir)
+	    echo "$shrdir/help"
+	    ;;
+	--skins)
+	    echo "$shrdir/skins"
+	    ;;
+	--scripts)
+	    echo "$shrdir/scripts"
+	    ;;
+	--archlib)
+	    echo "lib/x86_64-linux-gnu"
+	    ;;
+	--param=KDOC_BIN)
+	    echo ""
+	    ;;
+	--param=DOXYGEN_BIN)
+	    echo "/usr/bin/doxygen"
+	    ;;
+	--param=SONAME_OPT)
+	    echo "-shared -Wl,-soname="
+	    ;;
+	--param=INSTALL_D)
+	    echo "install -D"
+	    ;;
+	--param=INSTALL_L)
+	    echo "-m 0644"
+	    ;;
+	--param=RTTI_OPT)
+	    echo ""
+	    ;;
+	--param=USE_RTTI)
+	    echo "none"
+	    ;;
+	--param=COREDUMPER_LIB)
+	    echo "-L/usr -lcoredumper"
+	    ;;
+	--param=COREDUMPER_INC)
+	    echo "-I/usr"
+	    ;;
+	--param=HAVE_COREDUMPER)
+	    echo "yes"
+	    ;;
+	--param=HAVE_MALLINFO)
+	    echo "yes"
+	    ;;
+	--param=QT4_STATIC_MODULES)
+	    echo "no"
+	    ;;
+	--param=QT4_VER)
+	    echo "040806"
+	    ;;
+	--param=QT4_MOC)
+	    echo "/usr/bin/moc-qt4"
+	    ;;
+	--param=QT4_LIB_NET)
+	    echo "-lQtNetwork"
+	    ;;
+	--param=QT4_INC_NET)
+	    echo "-I/usr/include/qt4/QtNetwork"
+	    ;;
+	--param=QT4_LIB)
+	    echo "-lQtUiTools -lQtGui -lQtXml -lQtCore "
+	    ;;
+	--param=QT4_INC)
+	    echo "-DQT_SHARED -I/usr/include/qt4 -I/usr/include/qt4/QtUiTools -I/usr/include/qt4 -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I/usr/include/qt4/QtXml -I/usr/include/qt4 -I/usr/include/qt4/QtCore "
+	    ;;
+	--param=HAVE_QT4)
+	    echo "yes"
+	    ;;
+	--param=LIBUSB_LIB)
+	    echo "-lusb-1.0"
+	    ;;
+	--param=LIBUSB_INC)
+	    echo "-DHAVE_LIBUSB_VER -I/usr/include/libusb-1.0"
+	    ;;
+	--param=HAVE_LIBUSB)
+	    echo "yes"
+	    ;;
+	--param=ZLIB_LIB)
+	    echo "-lz"
+	    ;;
+	--param=ZLIB_INC)
+	    echo "-I/usr/include"
+	    ;;
+	--param=HAVE_ZLIB)
+	    echo "yes"
+	    ;;
+	--param=OPENSSL_VER)
+	    echo "1.0.1f"
+	    ;;
+	--param=OPENSSL_LIB)
+	    echo "-lssl -lcrypto "
+	    ;;
+	--param=OPENSSL_INC)
+	    echo ""
+	    ;;
+	--param=HAVE_OPENSSL)
+	    echo "yes"
+	    ;;
+	--param=H323_RUN)
+	    echo ""
+	    ;;
+	--param=H323_LIB)
+	    echo ""
+	    ;;
+	--param=H323_INC)
+	    echo ""
+	    ;;
+	--param=HAVE_H323)
+	    echo "no"
+	    ;;
+	--param=SPANDSP_LIB)
+	    echo "-lspandsp"
+	    ;;
+	--param=SPANDSP_INC)
+	    echo ""
+	    ;;
+	--param=HAVE_SPANDSP)
+	    echo "no"
+	    ;;
+	--param=AMRNB_LIB)
+	    echo "-lamrnb"
+	    ;;
+	--param=AMRNB_INC)
+	    echo ""
+	    ;;
+	--param=HAVE_AMRNB)
+	    echo "no"
+	    ;;
+	--param=SPEEX_LIB)
+	    echo "-lspeex"
+	    ;;
+	--param=SPEEX_INC)
+	    echo ""
+	    ;;
+	--param=HAVE_SPEEX)
+	    echo "no"
+	    ;;
+	--param=ISAC_INC)
+	    echo "-I/home/evilsocket/Desktop/yate/yate/libs/miniwebrtc/audio/coding_isac/main"
+	    ;;
+	--param=HAVE_ISAC)
+	    echo "yes"
+	    ;;
+	--param=ILBCWR_INC)
+	    echo "-I/home/evilsocket/Desktop/yate/yate/libs/miniwebrtc/audio/coding_ilbc"
+	    ;;
+	--param=HAVE_ILBCWR)
+	    echo "yes"
+	    ;;
+	--param=ILBC_INC)
+	    echo "-I/home/evilsocket/Desktop/yate/yate/libs/ilbc"
+	    ;;
+	--param=HAVE_ILBC)
+	    echo "yes"
+	    ;;
+	--param=GSM_LIB)
+	    echo "-lgsm"
+	    ;;
+	--param=GSM_INC)
+	    echo "-I/usr/include"
+	    ;;
+	--param=HAVE_GSM)
+	    echo "yes"
+	    ;;
+	--param=HAVE_COREAUDIO)
+	    echo "no"
+	    ;;
+	--param=HAVE_ALSA)
+	    echo "yes"
+	    ;;
+	--param=HAVE_SOUNDCARD)
+	    echo "yes"
+	    ;;
+	--param=WANPIPE_FLAGS)
+	    echo ""
+	    ;;
+	--param=HAVE_WANPIPE_TDM)
+	    echo "no"
+	    ;;
+	--param=HAVE_WANPIPE)
+	    echo "no"
+	    ;;
+	--param=BUILD_TDMCARD)
+	    echo "yes"
+	    ;;
+	--param=BUILD_WPCARD)
+	    echo "yes"
+	    ;;
+	--param=ZAP_FLAGS)
+	    echo ""
+	    ;;
+	--param=HAVE_ZAP)
+	    echo "no"
+	    ;;
+	--param=SQLITE_LIB)
+	    echo "-lsqlite3 "
+	    ;;
+	--param=SQLITE_INC)
+	    echo ""
+	    ;;
+	--param=HAVE_SQLITE)
+	    echo "yes"
+	    ;;
+	--param=MYSQL_VER)
+	    echo "5.6.28"
+	    ;;
+	--param=MYSQL_LIB)
+	    echo "-L/usr/lib/x86_64-linux-gnu -lmysqlclient -lpthread -lz -lm -ldl"
+	    ;;
+	--param=MYSQL_INC)
+	    echo "-I/usr/include/mysql -DMYSQL_OPT_RECONNECT=MYSQL_OPT_RECONNECT -DMYSQL_OPT_READ_TIMEOUT=MYSQL_OPT_READ_TIMEOUT -DMYSQL_OPT_WRITE_TIMEOUT=MYSQL_OPT_WRITE_TIMEOUT -DHAVE_MYSQL_SET_CHARSET"
+	    ;;
+	--param=HAVE_MYSQL)
+	    echo "yes"
+	    ;;
+	--param=PGSQL_LIB)
+	    echo "-lpq"
+	    ;;
+	--param=PGSQL_INC)
+	    echo ""
+	    ;;
+	--param=HAVE_PGSQL)
+	    echo "no"
+	    ;;
+	--param=HAVE_MACOSX_SUPPORT)
+	    echo "no"
+	    ;;
+	--param=MACOSX_INC)
+	    echo ""
+	    ;;
+	--param=INTERNAL_REGEX)
+	    echo "no"
+	    ;;
+	--param=RESOLV_LIB)
+	    echo "-lresolv"
+	    ;;
+	--param=RESOLV_INC)
+	    echo ""
+	    ;;
+	--param=HAVE_RESOLV)
+	    echo "yes"
+	    ;;
+	--param=SCTP_FLAGS)
+	    echo ""
+	    ;;
+	--param=HAVE_SCTP_NETINET)
+	    echo "no"
+	    ;;
+	--param=HAVE_SCTP)
+	    echo "no"
+	    ;;
+	--param=SSE2_OPS)
+	    echo "no"
+	    ;;
+	--param=ATOMIC_OPS)
+	    echo "-DATOMIC_OPS"
+	    ;;
+	--param=INLINE_FLAGS)
+	    echo ""
+	    ;;
+	--param=NETDB_FLAGS)
+	    echo " -DHAVE_NTOP -DHAVE_PTON -DHAVE_GHBN_R -DHAVE_GHBN2_R -DHAVE_GHBN2"
+	    ;;
+	--param=DLOPEN_LIB)
+	    echo "-ldl"
+	    ;;
+	--param=THREAD_LIB)
+	    echo "-lpthread"
+	    ;;
+	--param=HAVE_POLL)
+	    echo "yes"
+	    ;;
+	--param=HAVE_INT_TZ)
+	    echo "-DHAVE_INT_TZ"
+	    ;;
+	--param=HAVE_GMTOFF)
+	    echo "-DHAVE_GMTOFF"
+	    ;;
+	--param=HAVE_SOCKADDR_LEN)
+	    echo ""
+	    ;;
+	--param=HAVE_PRCTL)
+	    echo "-DHAVE_PRCTL"
+	    ;;
+	--param=HAVE_GETCWD)
+	    echo "-DHAVE_GETCWD"
+	    ;;
+	--param=HAVE_BLOCK_RETURN)
+	    echo "-DHAVE_BLOCK_RETURN"
+	    ;;
+	*)
+	    echo "I didn't understand: $1" >&2
+	    echo "$ustr" >&2
+	    exit 1
+	    ;;
+    esac
+    shift
+done

@@ -1,0 +1,74 @@
+; IMPORTANT!
+; This feature module is not loaded automatically, it needs a line in yate.conf:
+; [postload]
+; ${modulepath}/sig/isupmangler${modsuffix}=yes
+
+
+; Each section in this file describe an ISUP interceptor/mangler
+; You can add, remove or disable sections and reload to apply the changes
+
+
+;[mangler_name]
+; The name of the mangler is reported in the address parameter with the CIC
+
+; enable: boolean: Enable the mangler (default)
+;enable=yes
+
+; service: int: Service Information Field (protocol number)
+; It is unlikely you will ever need to modify it
+;service=5
+
+; netindicator: keyword: Value of Network Indicator bits in the SIO
+; Allowed values: international, spareinternational, national, reservednational
+;netindicator=national
+
+; pointcodetype: string: SS7 point code type (required)
+; Can be one of ITU,ANSI,ANSI8,China,Japan,Japan5
+;pointcodetype=
+
+; defaultpointcode: string: DPC of the ISUP messages to match
+;defaultpointcode=
+
+; remotepointcode: string: OPC of the ISUP messages to match
+;remotepointcode=
+
+; symmetric: boolean: Match and mangle messages in the opposite direction too (DPC->OPC)
+; Symmetric should be enabled if intercepting more than just IAM
+;symmetric=no
+
+; cic_min: int: Minimum circuit code to match
+;cic_min=1
+
+; cic_max: int: Maximum circuit code to match
+;cic_max=16383
+
+; intercept: keyword: What class of messages to intercept
+;  none: Intercept no message, just mangle routing label and CIC
+;  iam: Only intercept IAM
+;  cdr: Intercept most CDR related messages: IAM,SAM,ACM,CPG,ANM,CON,SUS,RES,REL,RLC
+;  all: Intercept almost all messages, except UPT,UPA,NRM,PAM,CNF,USR
+;intercept=iam
+
+; ignore-unknown-digits: boolean: Ignore signal digits that are not ITU standard (A, D and E)
+; The standard set includes only 0-9, B, C and the stop pulsing "."
+; ISUP does not support sending the * and # signals
+;ignore-unknown-digits=yes
+
+
+; The following set: settings apply to all matched messages, not just those intercepted
+; These mangle the routing label and circuit codes before any other handling
+
+; set:opc: int: OPC numeric value to overwrite in message label
+; The special value "mirror" will set the received DPC
+;set:opc=
+
+; set:dpc: int: DPC numeric value to overwrite in message label
+; The special value "mirror" will set the received OPC
+;set:dpc=
+
+; set:sls: int: Signaling Link Selection to overwrite in message label
+; The special value "cic" will use the circuit code after any altering
+;set:sls=
+
+; set:cic: int: Offset to apply to the circuit codes in message body
+;set:cic=0

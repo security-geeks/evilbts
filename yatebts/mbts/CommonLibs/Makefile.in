@@ -1,0 +1,18 @@
+# Makefile
+# This file holds the make rules for the common libs
+
+INCLUDES := $(TOP_INCLUDES) -I@srcdir@/../sqlite3
+INCFILES := ../../config.h A51.h BitVector.h Configuration.h F16.h Interthread.h \
+    LinkedLists.h Logger.h MemoryLeak.h Reporting.h ScalarTypes.h Sockets.h \
+    Threads.h Timeval.h Utils.h Vector.h sqlite3util.h
+
+ifeq ($(BUILD_TESTS),yes)
+PROGS:= A51Test BitVectorTest ConfigurationTest F16Test InterthreadTest LogTest \
+    SocketsTest TimevalTest URLEncodeTest VectorTest
+LOCALLIBS = $(SQL_LIBS)
+$(PROGS): $(SQL_DEPS)
+EXTRACLEAN = testSource testDestination
+endif
+LIBS := libCommonLibs.a
+OBJS := A51.o Configuration.o BitVector.o LinkedLists.o Logger.o Reporting.o Sockets.o \
+    Threads.o Timeval.o Utils.o sqlite3util.o

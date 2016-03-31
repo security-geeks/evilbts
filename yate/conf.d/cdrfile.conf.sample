@@ -1,0 +1,28 @@
+[general]
+; file: string: Name of the file to write the CDR to
+; You should check that this file is log rotated - see /etc/logrotate.d/yate
+; Example: file=/var/log/yate-cdr.tsv
+;file=
+
+; tabs: bool: Use tab-separated instead of comma-separated if format is missing
+;tabs=true
+
+; combined: bool: Use combined CDR for all legs of a call
+;combined=false
+
+; format: string: Custom format to use, overrides default. Each ${parameter}
+;  is replaced with the value of that parameter in the call.cdr message
+
+; Below are listed the format defaults for each mode combination
+
+; tab-separated (.tsv), combined=false
+;format=${time}	${billid}	${chan}	${address}	${caller}	${called}	${billtime}	${ringtime}	${duration}	${direction}	${status}	${reason}
+
+; tab-separated (.tsv), combined=true
+;format=${time}	${billid}	${chan}	${address}	${caller}	${called}	${billtime}	${ringtime}	${duration}	${status}	${reason}	${out_leg.chan}	${out_leg.address}	${out_leg.billtime}	${out_leg.ringtime}	${out_leg.duration}	${out_leg.reason}
+
+; comma-separated (.csv), combined=false
+;format=${time},"${billid}","${chan}","${address}","${caller}","${called}",${billtime},${ringtime},${duration},"${direction}","${status}","${reason}"
+
+; comma-separated (.csv), combined=true
+;format=${time},"${billid}","${chan}","${address}","${caller}","${called}",${billtime},${ringtime},${duration},"${status}","${reason}","${out_leg.chan}","${out_leg.address}",${out_leg.billtime},${out_leg.ringtime},${out_leg.duration},"${out_leg.reason}"

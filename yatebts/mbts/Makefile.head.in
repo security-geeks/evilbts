@@ -1,0 +1,59 @@
+# Makefile.head start
+
+# This file is part of the Yate-BTS Project http://www.yatebts.com
+#
+# Yet Another Telephony Engine - Base Transceiver Station
+# Copyright (C) 2013-2014 Null Team Impex SRL
+# Copyright (C) 2014 Legba, Inc
+#
+# This software is distributed under multiple licenses;
+# see the COPYING file in the main directory for licensing
+# information for this specific distribution.
+#
+# This use of this software may be subject to additional restrictions.
+# See the LEGAL file in the main directory for details.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+TOP_INCLUDES := -I@top_srcdir@ -I../.. -I@srcdir@
+GSM_INCLUDES := $(TOP_INCLUDES) -I@srcdir@/../CommonLibs -I@srcdir@/../A53 \
+    -I@srcdir@/../Connection -I@srcdir@/../GSM -I@srcdir@/../Globals -I@srcdir@/../sqlite3
+ALL_INCLUDES := $(GSM_INCLUDES) -I@srcdir@/../Control -I@srcdir@/../CLI -I@srcdir@/../GPRS \
+    -I@srcdir@/../Peering -I@srcdir@/../SGSNGGSN -I@srcdir@/../TRXManager
+
+SQL_LIBS := -L../sqlite3 -lsqlite3
+GSM_LIBS := -L../GSM -lGSM -L../Connection -lConnection -L../Peering -lPeering \
+    -L../CommonLibs -lCommonLibs -L../Globals -lGlobals $(SQL_LIBS)
+ALL_LIBS := -L../CLI -lCLI -L../Control -lControl -L../GPRS -lGPRS \
+    -L../SGSNGGSN -lSGSNGGSN -L../TRXManager -lTRXManager $(GSM_LIBS)
+A53_LIBS := -L../A53 -lA53
+
+SQL_DEPS := ../sqlite3/libsqlite3.a
+GSM_DEPS := $(SQL_DEPS) ../CommonLibs/libCommonLibs.a ../Connection/libConnection.a \
+    ../GSM/libGSM.a ../Globals/libGlobals.a
+ALL_DEPS := $(GSM_DEPS) ../CLI/libCLI.a ../Control/libControl.a ../GPRS/libGPRS.a \
+    ../Peering/libPeering.a ../SGSNGGSN/libSGSNGGSN.a ../SGSNGGSN/libSGSNGGSN.a \
+    ../TRXManager/libTRXManager.a
+A53_DEPS := ../A53/libA53.a
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+moddir := @YATE_MOD@
+
+DEBUG :=
+CXX  := @CXX@ -Wall
+AR  := ar
+DEFS :=
+OBJS :=
+LIBS :=
+PROGS:=
+FILES:=
+LIBTHR := @THREAD_LIB@
+CCFLAGS:= @YATE_INC@
+CFLAGS :=$(subst -Wno-overloaded-virtual,,$(CCFLAGS))
+LDFLAGS:= @LDFLAGS@
+
+# Makefile.head end
+

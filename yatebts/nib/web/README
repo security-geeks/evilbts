@@ -1,0 +1,48 @@
+What is Network in a Box Web GUI
+--------------------------------
+
+A Graphical Web Interface used to create configurations files for YateBTS.
+
+It has tree parts:
+
+1. Subscribers contains: List Subscribers, Online Subscribers, Rejected IMSIs
+List Subscribers - each IMSI can be inserted individually or
+                   insert a regular expression to be used to match the subscribers IMSIs.
+
+Online Subscribers - lists all the subscribers online.
+
+Rejected IMSIs - lists all the rejected subscribers.
+
+2. BTS Configuration - has all the sections from ybts.conf file that can be configured.
+ 
+3. Outgoing - configure outbound connection On IAX or SIP protocol with their specific parameters.
+
+Requirements
+------------
+
+PHP, Apache, YateBTS are required to run the software.
+
+Installing
+----------
+
+Depending on your operating system the main web directory will be /var/www (debian based systems) 
+or /var/www/html otherwise. If you don't have this path, then you need to install Apache server.
+
+Assuming you install YateBTS package or installed by hand(make install), the UI source code is 
+located in /usr/local/share/yate/nib_web.
+
+ > cd /var/www/html   (or cd /var/www on debian based OS)
+ > ln -s /usr/local/share/yate/nib_web yatebts_nib
+
+
+Configuration
+-------------
+
+Before using the interface, the permissions for the directories that are 
+set in the $yate_conf_dir variable MUST be set.
+
+The command that has to be runned as root (if the default settings are set) is:
+chmod -R a+rw /usr/local/etc/yate/ 
+
+Failing to configure the right permissions will make the interface display some errors
+the first time when it's used.

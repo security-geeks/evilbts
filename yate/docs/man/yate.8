@@ -1,0 +1,182 @@
+.\"
+.\" YATE - Yet Another Telephony Engine
+.\"
+.\" This software is distributed under multiple licenses;
+.\" see the COPYING file in the main directory for licensing
+.\" information for this specific distribution.
+.\"
+.\" This use of this software may be subject to additional restrictions.
+.\" See the LEGAL file in the main directory for details.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.\"
+.\"
+.TH YATE 8 "September 2007" "YATE" "Telephony Engine"
+.SH NAME
+\fByate\fP \- launch the YATE telephony engine
+.SH SYNOPSIS
+.B yate
+.RI [options]
+.RI [commands]
+.SH DESCRIPTION
+.B yate
+is a telephony engine that supports client, PBX and IVR functions trough plugins.
+.SH OPTIONS
+.SS General
+.TP
+.B \-h, \-\-help
+Display a short help message and exit
+.TP
+.B \-V, \-\-version
+Display program version and exit
+.TP
+.B \-v
+Verbose logging (you can use more than once)
+.TP
+.B \-q
+Quieter logging (you can use more than once)
+.TP
+.B \-d
+Daemonify, suppress output unless logged
+.TP
+.B \-s[=msec]
+Supervised, restart if crashes or locks up, optionally sleeps initially
+.TP
+.B \-r
+Enable rotation of log file (needs -s and -l)
+.TP
+.B \-l \fIfilename\fR
+Log to file \- should be used whenever running in daemon mode
+.TP
+.B \-p \fIfilename\fR
+Write PID of the supervisor or primary thread to file
+.TP
+.B \-n \fIconfigname\fR
+Use specified configuration name, overrides default "yate"
+.TP
+.B \-c \fIpathname\fR
+Path to conf files directory, overrides compiled-in value
+.TP
+.B \-u \fIpathname\fR
+Path to user data files directory, overrides compiled-in value
+.TP
+.B \-m \fIpathname\fR
+Path to modules directory, overrides compiled-in value
+.TP
+.B \-e \fIpathname\fR
+Path to shared directory, overrides compiled-in value
+.TP
+.B \-x \fIdirpath\fR
+Absolute or relative path to extra modules directory (can be repeated)
+.TP
+.B \-w \fIdirectory\fR
+Change working directory
+.TP
+.B \-N \fInodename\fR
+Set the name of the node in a cluster
+.SS Debugging options (may not be compiled in)
+.TP
+.B \-C
+Enable core dumps if supported by the operating system
+.TP
+.B \-F
+Increase the maximum file handle to compiled value
+.TP
+.B \-t
+Truncate the log file instead of appending to it
+.TP
+.B \-D[options]
+Special debugging options
+.TP
+.B \-Da
+Abort (coredumps if allowed) if bugs are encountered
+.TP
+.B \-Dm
+Attempt to debug mutex deadlocks by setting a maximum 10s limit, if repeated halves the limit
+.TP
+.B \-Dd
+Enable some locking debugging and safety features, degrades performance
+.TP
+.B \-Dl
+Attempt to load modules without having their symbols globally visible
+.TP
+.B \-Dc
+Call
+.I dlclose()
+until it gets an error
+.TP
+.B \-Du
+Do not unload modules, just try to call thier finalization code
+.TP
+.B \-Di
+Reinitialize after first initialization
+.TP
+.B \-Dx
+Exit immediately after initialization
+.TP
+.B \-Dw
+Delay for one second the creation of the first worker thread
+.TP
+.B \-Do
+Colorize the output using ANSI control character sequences
+.TP
+.B \-Ds
+Abort if bugs are encountered even during shutdown
+.TP
+.B \-DO
+Attempt to debug all object allocations by counting objects per plugin, degrades performance
+.TP
+.B \-Dn
+Do not add timestamps to debugging messages
+.TP
+.B \-Dt
+Add start time relative timestamps to debugging messages
+.TP
+.B \-De
+Add EPOCH (1-1-1970 GMT) based timestamps to debugging messages
+.TP
+.B \-Df
+Add GMT timestamps to debugging messages in format YYYYMMDDhhmmss.uuuuuu
+.TP
+.B \-DF
+Add GMT timestamps to debugging messages in format YYYY-MM-DD_hh:mm:ss.uuuuuu
+.TP
+.B \-Dz
+Add local timezone timestamps to debugging messages in format YYYYMMDDhhmmss.uuuuuu
+.TP
+.B \-DZ
+Add local timezone timestamps to debugging messages in format YYYY-MM-DD_hh:mm:ss.uuuuuu
+.SH COMMANDS
+Each command is sent to the YATE modules immediately after initialization.
+Modules define command syntax so that is not described here. Please look at
+the documentation for each module.
+.SH SIGNALS
+.TP
+\- SIGTERM and SIGINT (Ctrl\-C) will cleanly stop the engine
+.TP
+\- SIGQUIT (Ctrl\-\\) will reinitialize the modules
+.TP
+\- SIGHUP will reinitialize the modules if started in daemon mode (\-d)
+.TP
+\- SIGUSR1 will initiate a gracefull restart (when no plugin is busy)
+.TP
+\- SIGUSR2 will initiate an immediate restart
+.SH BUGS
+Under various
+.B *BSD
+implementations the
+.I dlclose()
+function is broken and may generate a segfault on exit.
+.PP
+Some
+.B libpthread
+implementations are broken and may fail to start the threads or fail to cleanup
+when the thread terminates.
+.SH AUTHORS
+Paul Chitescu <paulc@voip.null.ro>
+.br
+Diana Cionoiu <diana@voip.null.ro>
+.SH SEE ALSO
+.BR yate-config (8)
